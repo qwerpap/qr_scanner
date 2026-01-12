@@ -4,8 +4,8 @@ import 'package:qr_scanner/core/navigation/data/constants/navigation_constants.d
 import 'package:qr_scanner/core/theme/app_colors.dart';
 import 'package:qr_scanner/core/theme/app_fonts.dart';
 
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const CustomAppBar({
+class CustomSliverAppBar extends StatelessWidget {
+  const CustomSliverAppBar({
     super.key,
     this.title,
     this.actions,
@@ -17,6 +17,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.foregroundColor,
     this.showCloseButton = false,
     this.showDivider = true,
+    this.pinned = true,
+    this.floating = false,
   });
 
   final String? title;
@@ -29,9 +31,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Color? foregroundColor;
   final bool showCloseButton;
   final bool showDivider;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(52);
+  final bool pinned;
+  final bool floating;
 
   @override
   Widget build(BuildContext context) {
@@ -40,24 +41,38 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       finalActions.add(_buildCloseButton(context));
     }
 
-    return AppBar(
-      titleSpacing: 24,
+    return SliverAppBar(
       title: title != null
           ? Padding(
-              padding: const EdgeInsets.only(bottom: 10),
+              padding: const EdgeInsets.only(left: 24, bottom: 10),
               child: Text(
                 title!,
                 style: AppFonts.titleLarge.copyWith(fontSize: 22),
               ),
             )
           : null,
-      actions: finalActions.isEmpty ? null : finalActions,
-      leading: leading,
+      titleSpacing: 0,
+      actions: finalActions.isEmpty
+          ? null
+          : [
+              Padding(
+                padding: const EdgeInsets.only(right: 24),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: finalActions,
+                ),
+              ),
+            ],
+      leading: leading != null
+          ? Padding(padding: const EdgeInsets.only(left: 24), child: leading)
+          : null,
       automaticallyImplyLeading: automaticallyImplyLeading,
       centerTitle: centerTitle,
-      elevation: elevation,
+      elevation: elevation ?? 0,
       backgroundColor: backgroundColor ?? AppColors.whiteColor,
       foregroundColor: foregroundColor,
+      pinned: pinned,
+      floating: floating,
       bottom: showDivider
           ? PreferredSize(
               preferredSize: const Size.fromHeight(0),

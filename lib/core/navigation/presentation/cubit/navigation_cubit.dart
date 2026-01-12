@@ -30,6 +30,9 @@ class NavigationCubit extends Cubit<NavigationState> {
   }
 
   void navigateToRoute(BuildContext context, String route) {
+    final newIndex = NavigationUtils.getCurrentIndex(route);
+    // Update index immediately for instant UI feedback
+    emit(state.copyWith(currentIndex: newIndex));
     context.go(route);
   }
 }

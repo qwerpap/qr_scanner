@@ -26,6 +26,7 @@ class CustomBottomNavigation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<NavigationCubit, NavigationState>(
+      buildWhen: (previous, current) => previous.currentIndex != current.currentIndex,
       builder: (context, state) {
         final cubit = context.read<NavigationCubit>();
 

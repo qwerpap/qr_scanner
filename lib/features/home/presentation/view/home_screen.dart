@@ -13,49 +13,71 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 48),
-          children: [
-            WelcomeText(),
-            const SizedBox(height: 28),
-            GridView.builder(
-              itemCount: ActionCardsData.cards.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.88,
-                mainAxisSpacing: 16,
-                crossAxisSpacing: 16,
+        child: CustomScrollView(
+          slivers: [
+            SliverPadding(
+              padding: EdgeInsets.all(24),
+              sliver: SliverList(
+                delegate: SliverChildListDelegate([WelcomeText()]),
               ),
-              itemBuilder: (context, index) {
-                return ActionCard(
-                  model: ActionCardsData.cards[index],
-                  onTap: () {
-                    // TODO: Add navigation
-                  },
-                );
-              },
             ),
-            const SizedBox(height: 32),
-            Text(
-              'Recent Activity',
-              style: AppFonts.displayMedium.copyWith(fontSize: 22),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              sliver: SliverGrid(
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: 0.88,
+                  mainAxisSpacing: 16,
+                  crossAxisSpacing: 16,
+                ),
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  return ActionCard(
+                    model: ActionCardsData.cards[index],
+                    onTap: () {
+                      // TODO: Add navigation
+                    },
+                  );
+                }, childCount: ActionCardsData.cards.length),
+              ),
             ),
-            const SizedBox(height: 16),
-            ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: RecentActivityData.activities.length,
-              separatorBuilder: (context, index) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                return RecentCard(
-                  model: RecentActivityData.activities[index],
-                  onPressed: () {
-                    // TODO: Add navigation
-                  },
-                );
-              },
+            SliverPadding(
+              padding: const EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 32,
+                bottom: 48,
+              ),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate((context, index) {
+                  if (index == 0) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Recent Activity',
+                          style: AppFonts.displayMedium.copyWith(fontSize: 22),
+                        ),
+                        const SizedBox(height: 16),
+                        RecentCard(
+                          model: RecentActivityData.activities[0],
+                          onPressed: () {
+                            // TODO: Add navigation
+                          },
+                        ),
+                      ],
+                    );
+                  }
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 12),
+                    child: RecentCard(
+                      model: RecentActivityData.activities[index],
+                      onPressed: () {
+                        // TODO: Add navigation
+                      },
+                    ),
+                  );
+                }, childCount: RecentActivityData.activities.length),
+              ),
             ),
           ],
         ),

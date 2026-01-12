@@ -7,16 +7,17 @@ import '../../../bloc/bloc_providers.dart';
 import '../../data/constants/navigation_constants.dart';
 import '../../data/utils/page_transitions.dart';
 import '../cubit/navigation_cubit.dart';
+import '../utils/navigation_utils.dart';
 import 'bottom_navigation.dart';
 import '../../../../features/home/presentation/view/home_screen.dart';
 import '../../../../features/scan_qr/view/scan_qr_screen.dart';
-import '../../../../features/my_qr_codes/view/my_qr_codes_screen.dart';
+import '../../../../features/my_qr_codes/presentation/view/my_qr_codes_screen.dart';
 import '../../../../features/history/view/history_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     // initialLocation: NavigationConstants.home,
-    initialLocation: '/scan_result',
+    initialLocation: '/my_qr_codes',
     observers: [TalkerRouteObserver(getIt<Talker>())],
     routes: [
       ShellRoute(
@@ -28,6 +29,13 @@ class AppRouter {
             path: NavigationConstants.home,
             pageBuilder: (context, state) => PageTransitions.fadeTransition(
               child: const HomeScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/my_qr_codes',
+            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+              child: const MyQrCodesScreen(),
               state: state,
             ),
           ),
@@ -97,12 +105,21 @@ class _NavigationStateUpdaterState extends State<_NavigationStateUpdater> {
     if (!mounted) return;
 
     final cubit = context.read<NavigationCubit>();
-    final newLocation = GoRouterState.of(context).uri.path;
+    final routerState = GoRouterState.of(context);
+    final newLocation = routerState.uri.path;
     final newBrightness = MediaQuery.platformBrightnessOf(context);
     final newIsDark = newBrightness == Brightness.dark;
 
     if (_lastLocation != newLocation) {
-      cubit.updateCurrentRoute(newLocation);
+      // Use post-frame callback to ensure router state is fully updated
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        final currentLocation = GoRouterState.of(context).uri.path;
+        final newIndex = NavigationUtils.getCurrentIndex(currentLocation);
+        if (newIndex != cubit.state.currentIndex) {
+          cubit.updateCurrentRoute(currentLocation);
+        }
+      });
       _lastLocation = newLocation;
     }
     if (_lastBrightness != newBrightness) {
