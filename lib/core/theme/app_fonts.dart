@@ -24,7 +24,7 @@ class AppFonts {
   static const TextStyle displayLarge = TextStyle(
     fontFamily: fontFamily,
     fontSize: size32,
-    fontWeight: bold,
+    fontWeight: FontWeight.w700,
   );
 
   static const TextStyle displayMedium = TextStyle(
@@ -59,7 +59,7 @@ class AppFonts {
 
   static const TextStyle titleLarge = TextStyle(
     fontFamily: fontFamily,
-    fontSize: size16,
+    fontSize: 17,
     fontWeight: semibold,
   );
 

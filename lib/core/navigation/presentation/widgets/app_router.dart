@@ -7,7 +7,7 @@ import '../../data/constants/navigation_constants.dart';
 import '../../data/utils/page_transitions.dart';
 import '../cubit/navigation_cubit.dart';
 import 'bottom_navigation.dart';
-import '../../../../features/home/view/home_screen.dart';
+import '../../../../features/home/presentation/view/home_screen.dart';
 import '../../../../features/scan_qr/view/scan_qr_screen.dart';
 import '../../../../features/my_qr_codes/view/my_qr_codes_screen.dart';
 import '../../../../features/history/view/history_screen.dart';
