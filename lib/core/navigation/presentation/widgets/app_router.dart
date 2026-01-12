@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qr_scanner/features/scan_result/presentation/view/scan_result_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../bloc/bloc_providers.dart';
 import '../../data/constants/navigation_constants.dart';
@@ -14,7 +15,8 @@ import '../../../../features/history/view/history_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: NavigationConstants.home,
+    // initialLocation: NavigationConstants.home,
+    initialLocation: '/scan_result',
     observers: [TalkerRouteObserver(getIt<Talker>())],
     routes: [
       ShellRoute(
@@ -40,6 +42,13 @@ class AppRouter {
             path: NavigationConstants.myQrCodes,
             pageBuilder: (context, state) => PageTransitions.fadeTransition(
               child: const MyQrCodesScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/scan_result',
+            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+              child: const ScanResultScreen(),
               state: state,
             ),
           ),

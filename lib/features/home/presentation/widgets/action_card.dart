@@ -6,36 +6,46 @@ import 'package:qr_scanner/core/theme/app_fonts.dart';
 import 'package:qr_scanner/features/home/data/models/action_card_model.dart';
 
 class ActionCard extends StatelessWidget {
-  const ActionCard({super.key, required this.model});
+  const ActionCard({
+    super.key,
+    required this.model,
+    this.onTap,
+  });
 
   final ActionCardModel model;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return BaseContainer(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            ContainerWithIcon(
-              iconPath: model.iconPath,
-              iconData: model.iconData,
-              color: model.color,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              model.title,
-              style: AppFonts.titleLarge.copyWith(fontSize: 17),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              model.subtitle,
-              style: AppFonts.titleMedium.copyWith(
-                color: AppColors.greyTextColor,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(16),
+        child: BaseContainer(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ContainerWithIcon(
+                iconPath: model.iconPath,
+                iconData: model.iconData,
+                color: model.color,
               ),
-            ),
-          ],
+              const SizedBox(height: 16),
+              Text(
+                model.title,
+                style: AppFonts.titleLarge.copyWith(fontSize: 17),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                model.subtitle,
+                style: AppFonts.titleMedium.copyWith(
+                  color: AppColors.greyTextColor,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
 import 'package:qr_scanner/features/home/data/constants/action_cards_data.dart';
+import 'package:qr_scanner/features/home/data/constants/recent_activity_data.dart';
 import 'package:qr_scanner/features/home/presentation/widgets/action_card.dart';
 import 'package:qr_scanner/features/home/presentation/widgets/recent_card.dart';
 import 'package:qr_scanner/features/home/presentation/widgets/welcome_text.dart';
@@ -28,7 +29,12 @@ class HomeScreen extends StatelessWidget {
                 crossAxisSpacing: 16,
               ),
               itemBuilder: (context, index) {
-                return ActionCard(model: ActionCardsData.cards[index]);
+                return ActionCard(
+                  model: ActionCardsData.cards[index],
+                  onTap: () {
+                    // TODO: Add navigation
+                  },
+                );
               },
             ),
             const SizedBox(height: 32),
@@ -36,8 +42,21 @@ class HomeScreen extends StatelessWidget {
               'Recent Activity',
               style: AppFonts.displayMedium.copyWith(fontSize: 22),
             ),
-            SizedBox(height: 16),
-            RecentCard(),
+            const SizedBox(height: 16),
+            ListView.separated(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: RecentActivityData.activities.length,
+              separatorBuilder: (context, index) => const SizedBox(height: 12),
+              itemBuilder: (context, index) {
+                return RecentCard(
+                  model: RecentActivityData.activities[index],
+                  onPressed: () {
+                    // TODO: Add navigation
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),
