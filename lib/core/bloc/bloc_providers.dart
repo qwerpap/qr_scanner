@@ -7,6 +7,12 @@ import 'package:talker_flutter/talker_flutter.dart';
 import '../navigation/presentation/cubit/navigation_cubit.dart';
 import '../../features/splash/presentation/cubit/splash_cubit.dart';
 import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
+import '../../features/onboarding/data/datasources/onboarding_local_datasource.dart';
+import '../../features/onboarding/data/repositories/onboarding_repository_impl.dart';
+import '../../features/onboarding/domain/repositories/onboarding_repository.dart';
+import '../../features/onboarding/domain/usecases/check_onboarding_completed_usecase.dart';
+import '../../features/onboarding/domain/usecases/set_onboarding_completed_usecase.dart';
+import '../../features/onboarding/presentation/bloc/onboarding_bloc.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -18,6 +24,7 @@ class BlocProviders {
     _registerNavigationCubit();
     _registerSplashCubit();
     _registerOnboardingCubit();
+    _registerOnboardingBloc();
   }
 
   static void _registerTalker() {
@@ -37,6 +44,40 @@ class BlocProviders {
 
   static void _registerOnboardingCubit() {
     getIt.registerFactory<OnboardingCubit>(() => OnboardingCubit());
+  }
+
+  static void _registerOnboardingBloc() {
+    // Data layer
+    getIt.registerLazySingleton<OnboardingLocalDataSource>(
+      () => OnboardingLocalDataSource(talker: getIt<Talker>()),
+    );
+
+    // Repository
+    getIt.registerLazySingleton<OnboardingRepository>(
+      () => OnboardingRepositoryImpl(
+        localDataSource: getIt<OnboardingLocalDataSource>(),
+      ),
+    );
+
+    // Use cases
+    getIt.registerLazySingleton<CheckOnboardingCompletedUseCase>(
+      () => CheckOnboardingCompletedUseCase(
+        repository: getIt<OnboardingRepository>(),
+      ),
+    );
+
+    getIt.registerLazySingleton<SetOnboardingCompletedUseCase>(
+      () => SetOnboardingCompletedUseCase(
+        repository: getIt<OnboardingRepository>(),
+      ),
+    );
+
+    getIt.registerLazySingleton<OnboardingBloc>(
+      () => OnboardingBloc(
+        checkOnboardingCompletedUseCase: getIt<CheckOnboardingCompletedUseCase>(),
+        setOnboardingCompletedUseCase: getIt<SetOnboardingCompletedUseCase>(),
+      ),
+    );
   }
 
   static Widget wrapWithProviders({

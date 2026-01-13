@@ -105,17 +105,15 @@ class _SplashContentState extends State<SplashContent>
   }
 
   void _startAnimations() {
-    // Logo appears first
-    _logoController.forward();
-    // Title appears after 200ms
+    if (mounted) {
+      _logoController.forward();
+    }
     Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) _titleController.forward();
     });
-    // Slogan appears after 400ms
     Future.delayed(const Duration(milliseconds: 400), () {
       if (mounted) _sloganController.forward();
     });
-    // Loader appears after 600ms
     Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) _loaderController.forward();
     });

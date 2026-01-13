@@ -21,7 +21,6 @@ import '../../../../features/history/presentation/view/history_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    // initialLocation: NavigationConstants.home,
     initialLocation: '/splash',
     observers: [TalkerRouteObserver(getIt<Talker>())],
     routes: [

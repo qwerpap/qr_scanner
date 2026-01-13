@@ -22,11 +22,14 @@ class _LoadingDotsState extends State<LoadingDots>
       )..repeat(reverse: true),
     );
 
-    // Stagger animations
     for (int i = 0; i < _controllers.length; i++) {
       Future.delayed(
         Duration(milliseconds: i * 200),
-        () => _controllers[i].forward(),
+        () {
+          if (mounted) {
+            _controllers[i].forward();
+          }
+        },
       );
     }
   }
