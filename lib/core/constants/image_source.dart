@@ -16,4 +16,10 @@ class ImageSource {
   static const String historyAppbar = 'assets/svg/history_appbar.svg';
 
   static const String success = 'assets/png/success.png';
+  static const String unlimited = 'assets/png/unlimited.png';
+  static const String ads = 'assets/png/ads.png';
+  static const String allQr = 'assets/png/all_qr.png';
+  static const String analytics = 'assets/png/analytics.png';
+  static const String cloud = 'assets/png/cloud.png';
+  static const String paywallQr = 'assets/png/paywall_qr.png';
 }

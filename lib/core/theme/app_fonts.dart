@@ -71,7 +71,7 @@ class AppFonts {
 
   static const TextStyle titleSmall = TextStyle(
     fontFamily: fontFamily,
-    fontSize: size12,
+    fontSize: 13,
     fontWeight: medium,
   );
 

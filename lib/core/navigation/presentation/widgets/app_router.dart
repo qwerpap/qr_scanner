@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/features/create_qr/presentation/view/create_qr_code_screen.dart';
 import 'package:qr_scanner/features/create_qr/presentation/view/qr_code_ready_screen.dart';
+import 'package:qr_scanner/features/paywall/presentation/view/paywall_screen.dart';
 import 'package:qr_scanner/features/scan_result/presentation/view/scan_result_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../bloc/bloc_providers.dart';
@@ -19,7 +20,7 @@ import '../../../../features/history/presentation/view/history_screen.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     // initialLocation: NavigationConstants.home,
-    initialLocation: '/create_qr_code',
+    initialLocation: '/paywall',
     observers: [TalkerRouteObserver(getIt<Talker>())],
     routes: [
       ShellRoute(
@@ -45,6 +46,13 @@ class AppRouter {
             path: '/create_qr_code',
             pageBuilder: (context, state) => PageTransitions.fadeTransition(
               child: const CreateQrCodeScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/paywall',
+            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+              child: const PaywallScreen(),
               state: state,
             ),
           ),
