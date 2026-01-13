@@ -12,6 +12,7 @@ class AppColors {
   static const Color greyTextColor = Color.fromRGBO(90, 90, 90, 1);
   static const Color scaffoldBgColor = Color.fromRGBO(246, 247, 250, 1);
   static const Color borderColor = Color.fromRGBO(229, 231, 235, 1);
+  static const Color onboardingGradientEnd = Color.fromRGBO(232, 247, 255, 1);
 
   static const LinearGradient primaryGradient = LinearGradient(
     colors: [primaryColor, primaryDarkColor],

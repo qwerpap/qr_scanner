@@ -10,7 +10,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.title,
     this.actions,
     this.leading,
-    this.automaticallyImplyLeading = true,
+    this.automaticallyImplyLeading = false,
     this.centerTitle = false,
     this.elevation,
     this.backgroundColor,
@@ -40,36 +40,49 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       finalActions.add(_buildCloseButton(context));
     }
 
-    return AppBar(
-      titleSpacing: 24,
-      title: title != null
-          ? Padding(
-              padding: const EdgeInsets.only(bottom: 10),
-              child: Text(
-                title!,
-                style: AppFonts.titleLarge.copyWith(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
+    return Container(
+      decoration: BoxDecoration(
+        color: backgroundColor ?? AppColors.whiteColor,
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromRGBO(0, 0, 0, 0.06),
+            offset: const Offset(0, 4),
+            blurRadius: 16,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
+      child: AppBar(
+        titleSpacing: 24,
+        title: title != null
+            ? Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text(
+                  title!,
+                  style: AppFonts.titleLarge.copyWith(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
-              ),
-            )
-          : null,
-      actions: finalActions.isEmpty ? null : finalActions,
-      leading: leading,
-      automaticallyImplyLeading: automaticallyImplyLeading,
-      centerTitle: centerTitle,
-      elevation: elevation,
-      backgroundColor: backgroundColor ?? AppColors.whiteColor,
-      foregroundColor: foregroundColor,
-      bottom: showDivider
-          ? PreferredSize(
-              preferredSize: const Size.fromHeight(0),
-              child: Container(
-                height: 1,
-                color: const Color.fromRGBO(229, 231, 235, 1),
-              ),
-            )
-          : null,
+              )
+            : null,
+        actions: finalActions.isEmpty ? null : finalActions,
+        leading: leading,
+        automaticallyImplyLeading: automaticallyImplyLeading,
+        centerTitle: centerTitle,
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        foregroundColor: foregroundColor,
+        bottom: showDivider
+            ? PreferredSize(
+                preferredSize: const Size.fromHeight(0),
+                child: Container(
+                  height: 1,
+                  color: const Color.fromRGBO(229, 231, 235, 1),
+                ),
+              )
+            : null,
+      ),
     );
   }
 

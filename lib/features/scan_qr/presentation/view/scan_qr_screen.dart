@@ -14,16 +14,23 @@ class ScanQrScreen extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const CustomSliverAppBar(title: 'Scan QR Code', showDivider: false),
+          const CustomSliverAppBar(
+            title: 'Scan QR Code',
+            showDivider: false,
+            showCloseButton: true,
+          ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 24),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 20),
                 const ScanInfoCard(),
-                const SizedBox(height: 20),
-                const Center(child: QrCodeSection()),
-                const SizedBox(height: 20),
+                const Center(
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(vertical: 40),
+                    child: QrCodeSection(),
+                  ),
+                ),
                 BaseContainer(
                   padding: const EdgeInsets.all(16),
                   child: ControlButtonsList(

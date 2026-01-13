@@ -21,5 +21,10 @@ class ImageSource {
   static const String allQr = 'assets/png/all_qr.png';
   static const String analytics = 'assets/png/analytics.png';
   static const String cloud = 'assets/png/cloud.png';
+  static const String splashQr = 'assets/png/splash_qr.png';
+  static const String onboarding1 = 'assets/png/onboarding1.png';
+  static const String onboarding2 = 'assets/png/onboarding2.png';
+  static const String onboarding3 = 'assets/png/onboarding3.png';
+  static const String onboarding4 = 'assets/png/onboarding4.png';
   static const String paywallQr = 'assets/png/paywall_qr.png';
 }

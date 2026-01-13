@@ -26,6 +26,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
           CustomSliverAppBar(
             title: 'History',
             showDivider: false,
+            automaticallyImplyLeading: false,
             actions: [
               Center(
                 child: Container(

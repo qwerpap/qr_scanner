@@ -5,6 +5,8 @@ import 'package:go_router/go_router.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../navigation/presentation/cubit/navigation_cubit.dart';
+import '../../features/splash/presentation/cubit/splash_cubit.dart';
+import '../../features/onboarding/presentation/cubit/onboarding_cubit.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -14,6 +16,8 @@ class BlocProviders {
   static void setup() {
     _registerTalker();
     _registerNavigationCubit();
+    _registerSplashCubit();
+    _registerOnboardingCubit();
   }
 
   static void _registerTalker() {
@@ -25,6 +29,14 @@ class BlocProviders {
       (currentLocation, isDark) =>
           NavigationCubit(currentLocation: currentLocation, isDark: isDark),
     );
+  }
+
+  static void _registerSplashCubit() {
+    getIt.registerFactory<SplashCubit>(() => SplashCubit());
+  }
+
+  static void _registerOnboardingCubit() {
+    getIt.registerFactory<OnboardingCubit>(() => OnboardingCubit());
   }
 
   static Widget wrapWithProviders({

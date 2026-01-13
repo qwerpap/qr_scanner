@@ -3,8 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/features/create_qr/presentation/view/create_qr_code_screen.dart';
 import 'package:qr_scanner/features/create_qr/presentation/view/qr_code_ready_screen.dart';
+import 'package:qr_scanner/features/onboarding/presentation/view/onboarding_screen.dart';
 import 'package:qr_scanner/features/paywall/presentation/view/paywall_screen.dart';
 import 'package:qr_scanner/features/scan_result/presentation/view/scan_result_screen.dart';
+import 'package:qr_scanner/features/splash/presentation/view/splash_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../bloc/bloc_providers.dart';
 import '../../data/constants/navigation_constants.dart';
@@ -20,9 +22,24 @@ import '../../../../features/history/presentation/view/history_screen.dart';
 class AppRouter {
   static final GoRouter router = GoRouter(
     // initialLocation: NavigationConstants.home,
-    initialLocation: '/paywall',
+    initialLocation: '/splash',
     observers: [TalkerRouteObserver(getIt<Talker>())],
     routes: [
+      GoRoute(
+        path: '/splash',
+        pageBuilder: (context, state) => PageTransitions.fadeTransition(
+          child: const SplashScreen(),
+          state: state,
+        ),
+      ),
+      GoRoute(
+        path: '/onboarding',
+        pageBuilder: (context, state) => PageTransitions.fadeTransition(
+          child: const OnboardingScreen(),
+          state: state,
+          duration: const Duration(milliseconds: 200),
+        ),
+      ),
       ShellRoute(
         builder: (context, state, child) {
           return MainShell(child: child);
@@ -33,6 +50,7 @@ class AppRouter {
             pageBuilder: (context, state) => PageTransitions.fadeTransition(
               child: const HomeScreen(),
               state: state,
+              duration: const Duration(milliseconds: 200),
             ),
           ),
           GoRoute(
@@ -44,7 +62,7 @@ class AppRouter {
           ),
           GoRoute(
             path: '/create_qr_code',
-            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+            pageBuilder: (context, state) => PageTransitions.slideTransition(
               child: const CreateQrCodeScreen(),
               state: state,
             ),
@@ -58,21 +76,21 @@ class AppRouter {
           ),
           GoRoute(
             path: '/history',
-            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+            pageBuilder: (context, state) => PageTransitions.slideTransition(
               child: const HistoryScreen(),
               state: state,
             ),
           ),
           GoRoute(
             path: NavigationConstants.scanQr,
-            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+            pageBuilder: (context, state) => PageTransitions.slideTransition(
               child: const ScanQrScreen(),
               state: state,
             ),
           ),
           GoRoute(
             path: NavigationConstants.myQrCodes,
-            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+            pageBuilder: (context, state) => PageTransitions.slideTransition(
               child: const MyQrCodesScreen(),
               state: state,
             ),
@@ -93,7 +111,7 @@ class AppRouter {
           ),
           GoRoute(
             path: NavigationConstants.history,
-            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+            pageBuilder: (context, state) => PageTransitions.slideTransition(
               child: const HistoryScreen(),
               state: state,
             ),

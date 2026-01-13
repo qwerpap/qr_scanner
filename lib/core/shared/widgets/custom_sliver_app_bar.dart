@@ -10,7 +10,7 @@ class CustomSliverAppBar extends StatelessWidget {
     this.title,
     this.actions,
     this.leading,
-    this.automaticallyImplyLeading = true,
+    this.automaticallyImplyLeading = false,
     this.centerTitle = false,
     this.elevation,
     this.backgroundColor,
@@ -71,11 +71,24 @@ class CustomSliverAppBar extends StatelessWidget {
           : null,
       automaticallyImplyLeading: automaticallyImplyLeading,
       centerTitle: centerTitle,
-      elevation: elevation ?? 0,
+      elevation: 0,
       backgroundColor: backgroundColor ?? AppColors.whiteColor,
       foregroundColor: foregroundColor,
       pinned: pinned,
       floating: floating,
+      flexibleSpace: Container(
+        decoration: BoxDecoration(
+          color: backgroundColor ?? AppColors.whiteColor,
+          boxShadow: [
+            BoxShadow(
+              color: const Color.fromRGBO(0, 0, 0, 0.06),
+              offset: const Offset(0, 4),
+              blurRadius: 16,
+              spreadRadius: 0,
+            ),
+          ],
+        ),
+      ),
       bottom: showDivider
           ? PreferredSize(
               preferredSize: const Size.fromHeight(0),

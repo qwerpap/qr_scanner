@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/core.dart';
 import 'package:qr_scanner/features/home/data/constants/action_cards_data.dart';
 import 'package:qr_scanner/features/home/data/constants/recent_activity_data.dart';
@@ -8,6 +9,21 @@ import 'package:qr_scanner/features/home/presentation/widgets/welcome_text.dart'
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  String _getRouteForActionCard(String title) {
+    switch (title) {
+      case 'Scan QR':
+        return NavigationConstants.scanQr;
+      case 'Create QR':
+        return '/create_qr_code';
+      case 'My QR Codes':
+        return NavigationConstants.myQrCodes;
+      case 'History':
+        return NavigationConstants.history;
+      default:
+        return NavigationConstants.home;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +47,12 @@ class HomeScreen extends StatelessWidget {
                   crossAxisSpacing: 16,
                 ),
                 delegate: SliverChildBuilderDelegate((context, index) {
+                  final card = ActionCardsData.cards[index];
                   return ActionCard(
-                    model: ActionCardsData.cards[index],
+                    model: card,
                     onTap: () {
-                      // TODO: Add navigation
+                      final route = _getRouteForActionCard(card.title);
+                      context.push(route);
                     },
                   );
                 }, childCount: ActionCardsData.cards.length),

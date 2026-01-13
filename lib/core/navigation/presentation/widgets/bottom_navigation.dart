@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../theme/app_colors.dart';
 import '../../data/constants/bottom_navigation_constants.dart';
@@ -193,7 +194,10 @@ class CustomFloatingActionButton extends StatelessWidget {
       ),
       child: FloatingActionButton(
         onPressed: () {
-          // TODO: Add action for center button
+          final currentPath = GoRouterState.of(context).uri.path;
+          if (currentPath != '/create_qr_code') {
+            context.push('/create_qr_code');
+          }
         },
         backgroundColor: AppColors.greenColor,
         elevation: 0,
