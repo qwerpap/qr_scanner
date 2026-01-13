@@ -12,12 +12,12 @@ import 'bottom_navigation.dart';
 import '../../../../features/home/presentation/view/home_screen.dart';
 import '../../../../features/scan_qr/view/scan_qr_screen.dart';
 import '../../../../features/my_qr_codes/presentation/view/my_qr_codes_screen.dart';
-import '../../../../features/history/view/history_screen.dart';
+import '../../../../features/history/presentation/view/history_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     // initialLocation: NavigationConstants.home,
-    initialLocation: '/my_qr_codes',
+    initialLocation: '/history',
     observers: [TalkerRouteObserver(getIt<Talker>())],
     routes: [
       ShellRoute(
@@ -36,6 +36,13 @@ class AppRouter {
             path: '/my_qr_codes',
             pageBuilder: (context, state) => PageTransitions.fadeTransition(
               child: const MyQrCodesScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/history',
+            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+              child: const HistoryScreen(),
               state: state,
             ),
           ),

@@ -13,6 +13,7 @@ class ImageSource {
   static const String link = 'assets/svg/link.svg';
   static const String open = 'assets/svg/open.svg';
   static const String eye = 'assets/svg/eye.svg';
+  static const String historyAppbar = 'assets/svg/history_appbar.svg';
 
   static const String success = 'assets/png/success.png';
 }

@@ -47,7 +47,10 @@ class CustomSliverAppBar extends StatelessWidget {
               padding: const EdgeInsets.only(left: 24, bottom: 10),
               child: Text(
                 title!,
-                style: AppFonts.titleLarge.copyWith(fontSize: 22),
+                style: AppFonts.titleLarge.copyWith(
+                  fontSize: 22,
+                  fontWeight: FontWeight.w700,
+                ),
               ),
             )
           : null,
