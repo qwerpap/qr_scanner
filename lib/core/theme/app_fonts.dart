@@ -60,7 +60,7 @@ class AppFonts {
   static const TextStyle titleLarge = TextStyle(
     fontFamily: fontFamily,
     fontSize: 17,
-    fontWeight: semibold,
+    fontWeight: FontWeight.w700,
   );
 
   static const TextStyle titleMedium = TextStyle(

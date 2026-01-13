@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qr_scanner/features/create_qr/presentation/view/create_qr_code_screen.dart';
+import 'package:qr_scanner/features/create_qr/presentation/view/qr_code_ready_screen.dart';
 import 'package:qr_scanner/features/scan_result/presentation/view/scan_result_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../bloc/bloc_providers.dart';
@@ -10,14 +12,14 @@ import '../cubit/navigation_cubit.dart';
 import '../utils/navigation_utils.dart';
 import 'bottom_navigation.dart';
 import '../../../../features/home/presentation/view/home_screen.dart';
-import '../../../../features/scan_qr/view/scan_qr_screen.dart';
+import '../../../../features/scan_qr/presentation/view/scan_qr_screen.dart';
 import '../../../../features/my_qr_codes/presentation/view/my_qr_codes_screen.dart';
 import '../../../../features/history/presentation/view/history_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
     // initialLocation: NavigationConstants.home,
-    initialLocation: '/history',
+    initialLocation: '/create_qr_code',
     observers: [TalkerRouteObserver(getIt<Talker>())],
     routes: [
       ShellRoute(
@@ -36,6 +38,13 @@ class AppRouter {
             path: '/my_qr_codes',
             pageBuilder: (context, state) => PageTransitions.fadeTransition(
               child: const MyQrCodesScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/create_qr_code',
+            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+              child: const CreateQrCodeScreen(),
               state: state,
             ),
           ),
@@ -64,6 +73,13 @@ class AppRouter {
             path: '/scan_result',
             pageBuilder: (context, state) => PageTransitions.fadeTransition(
               child: const ScanResultScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/qr_code_ready',
+            pageBuilder: (context, state) => PageTransitions.fadeTransition(
+              child: const QrCodeReadyScreen(),
               state: state,
             ),
           ),

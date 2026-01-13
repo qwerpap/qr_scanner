@@ -89,41 +89,36 @@ class CustomSliverAppBar extends StatelessWidget {
   }
 
   Widget _buildCloseButton(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 24),
-      child: Center(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              if (context.canPop()) {
-                context.pop();
-              } else {
-                context.go(NavigationConstants.home);
-              }
-            },
-            borderRadius: BorderRadius.circular(24),
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: AppColors.scaffoldBgColor,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.06),
-                    offset: const Offset(0, 4),
-                    blurRadius: 16,
-                    spreadRadius: 0,
-                  ),
-                ],
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: () {
+          if (context.canPop()) {
+            context.pop();
+          } else {
+            context.go(NavigationConstants.home);
+          }
+        },
+        borderRadius: BorderRadius.circular(24),
+        child: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppColors.scaffoldBgColor,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.06),
+                offset: const Offset(0, 4),
+                blurRadius: 16,
+                spreadRadius: 0,
               ),
-              child: const Icon(
-                Icons.close,
-                color: AppColors.blackColor,
-                size: 20,
-              ),
-            ),
+            ],
+          ),
+          child: const Icon(
+            Icons.close,
+            color: AppColors.blackColor,
+            size: 20,
           ),
         ),
       ),
