@@ -1,0 +1,22 @@
+import 'package:flutter/material.dart';
+
+class AppColors {
+  static const Color whiteColor = Colors.white;
+  static const Color blackColor = Color.fromRGBO(17, 17, 17, 1);
+
+  static const Color primaryColor = Color.fromRGBO(122, 203, 255, 1);
+  static const Color primaryDarkColor = Color.fromRGBO(77, 166, 255, 1);
+  static const Color greenColor = Color.fromRGBO(119, 201, 126, 1);
+  static const Color orangeColor = Color.fromRGBO(255, 184, 108, 1);
+  static const Color greyColor = Color.fromRGBO(176, 176, 176, 1);
+  static const Color greyTextColor = Color.fromRGBO(90, 90, 90, 1);
+  static const Color scaffoldBgColor = Color.fromRGBO(246, 247, 250, 1);
+  static const Color borderColor = Color.fromRGBO(229, 231, 235, 1);
+  static const Color onboardingGradientEnd = Color.fromRGBO(232, 247, 255, 1);
+
+  static const LinearGradient primaryGradient = LinearGradient(
+    colors: [primaryColor, primaryDarkColor],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+}

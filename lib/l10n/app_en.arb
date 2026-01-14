@@ -1,0 +1,234 @@
+{
+  "@@locale": "en",
+  "appTitle": "QR Scanner",
+  "@appTitle": {
+    "description": "Application title"
+  },
+  "welcome": "Welcome!",
+  "@welcome": {
+    "description": "Welcome message"
+  },
+  "welcomeWithName": "Welcome, {name}!",
+  "@welcomeWithName": {
+    "description": "Welcome message with user name",
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "scanQrCode": "Scan QR Code",
+  "createQrCode": "Create QR Code",
+  "myQrCodes": "My QR Codes",
+  "history": "History",
+  "profile": "Profile",
+  "retry": "Retry",
+  "error": "Error",
+  "processing": "Processing...",
+  "continueText": "Continue",
+  "termsOfService": "Terms of Service",
+  "privacyPolicy": "Privacy Policy",
+  "and": "and",
+  "subscriptionPurchasedSuccessfully": "Subscription purchased successfully!",
+  "purchasesRestoredSuccessfully": "Purchases restored successfully!",
+  "noProductsAvailable": "No products available. Please check your internet connection and try again.",
+  "noInternetConnection": "No internet connection. Please check your network and try again.",
+  "productsTemporarilyUnavailable": "Products are temporarily unavailable. Please try again later.",
+  "failedToLoadProducts": "Failed to load products. Please check your internet connection and try again.",
+  "copiedToClipboard": "Copied to clipboard",
+  "savedSuccessfully": "Saved successfully",
+  "sharedSuccessfully": "Shared successfully",
+  "noQrFoundInImage": "No QR code found in image",
+  "cannotOpenUrl": "Cannot open URL",
+  "simulatorNotSupported": "Image scanning is not available on iOS Simulator. Please use a real device.",
+  "cameraUnavailable": "Camera Unavailable",
+  "cameraNotAvailableOnSimulator": "Camera not available\non iOS Simulator",
+  "cameraAccessDenied": "Camera Access Denied",
+  "cameraPermissionDenied": "Camera permission denied.\nPlease enable it in Settings.",
+  "cameraPermissionRequired": "Camera Permission Required",
+  "cameraPermissionRequiredToScan": "Camera permission required\nto scan QR codes",
+  "initializingCamera": "Initializing camera...",
+  "initializingCameraTitle": "Initializing Camera",
+  "cameraPermissionRequiredText": "Camera permission required",
+  "loadingCamera": "Loading camera...",
+  "useGalleryButtonToScan": "Use Gallery button to scan QR from photos",
+  "openSettings": "Open Settings",
+  "requestPermission": "Request Permission",
+  "pleaseEnableCameraPermission": "Please enable camera permission\nin Settings",
+  "restorePurchases": "Restore Purchases",
+  "autoRenewableCancelAnytime": "Auto-renewable. Cancel anytime.",
+  "retryButton": "Retry",
+  "manageYourQrCodesEasily": "Manage your QR codes easily",
+  "home": "Home",
+  "scan": "Scan",
+  "scanQr": "Scan QR",
+  "quickScan": "Quick scan",
+  "createQr": "Create QR",
+  "generateNew": "Generate new",
+  "myQrCodesTitle": "My QR Codes",
+  "savedCodes": "Saved codes",
+  "historyTitle": "History",
+  "recentScans": "Recent scans",
+  "language": "Language",
+  "english": "English",
+  "russian": "Russian",
+  "next": "Next",
+  "skip": "Skip",
+  "getStarted": "Get Started",
+  "onboardingWelcomeTitle": "Welcome",
+  "onboardingWelcomeBold": "Scan, Create & Manage QR Codes Easily",
+  "onboardingScanTitle": "Scan QR Codes",
+  "onboardingScanBold": "Quickly Scan Any QR Code",
+  "onboardingScanRegular": "Align QR codes in frame and get instant\nresults",
+  "onboardingCreateTitle": "Create QR Codes",
+  "onboardingCreateBold": "Generate QR Codes Instantly",
+  "onboardingCreateRegular": "Enter URL, text, or contact info and get\nyour custom QR",
+  "onboardingManageTitle": "Manage & Share",
+  "onboardingManageBold": "Save, Share, and Track All Your QR Codes",
+  "onboardingManageRegular": "Access My QR Codes and History anytime",
+  "subscription": "Subscription",
+  "active": "Active",
+  "free": "Free",
+  "upgradeToPremium": "Upgrade to Premium",
+  "upgradeToPremiumToUnlock": "Upgrade to Premium to unlock all features",
+  "yourSubscriptionIsActive": "Your subscription is active",
+  "expiresNever": "Expires: Never",
+  "editQrCode": "Edit QR Code",
+  "scanSuccessful": "Scan Successful",
+  "qrCodeDecodedSuccessfully": "QR code decoded successfully",
+  "contentType": "Content Type",
+  "designOptions": "Design Options",
+  "color": "Color",
+  "websiteUrl": "Website URL",
+  "fullContent": "Full Content",
+  "scanned": "Scanned",
+  "type": "Type",
+  "scanResult": "Scan Result",
+  "noQrCodeData": "No QR code data",
+  "goBack": "Go Back",
+  "goToMyQrCodes": "Go to My QR Codes",
+  "gallery": "Gallery",
+  "camera": "Camera",
+  "deleteQrCode": "Delete QR Code",
+  "clearHistory": "Clear History",
+  "all": "All",
+  "scannedCategory": "Scanned",
+  "createdCategory": "Created",
+  "urlCategory": "URL",
+  "textCategory": "Text",
+  "wifiCategory": "WiFi",
+  "contactCategory": "Contact",
+  "unlimitedQrScans": "Unlimited QR Scans",
+  "scanAsManyQrCodesAsYouWant": "Scan as many QR codes as you want",
+  "createAllQrTypes": "Create All QR Types",
+  "urlTextContactWifiAndMore": "URL, Text, Contact, WiFi, and more",
+  "noAds": "No Ads",
+  "cleanDistractionFreeExperience": "Clean, distraction-free experience",
+  "cloudBackup": "Cloud Backup",
+  "syncAcrossAllYourDevices": "Sync across all your devices",
+  "advancedAnalytics": "Advanced Analytics",
+  "trackScansAndUsagePatterns": "Track scans and usage patterns",
+  "recentActivity": "Recent Activity",
+  "delete": "Delete",
+  "cancel": "Cancel",
+  "clear": "Clear",
+  "areYouSureYouWantToDeleteThisQrCode": "Are you sure you want to delete this QR code?",
+  "areYouSureYouWantToClearAllHistory": "Are you sure you want to clear all history? This action cannot be undone.",
+  "unlockFullQrTools": "Unlock Full QR\nTools",
+  "unlimitedScansCustomQrCreationAndFullHistoryAccess": "Unlimited scans, custom QR creation, and full history access.",
+  "restore": "Restore",
+  "week": "week",
+  "month": "month",
+  "year": "year",
+  "threeDayFreeTrial": "3-day free trial",
+  "cancelAnytime": "Cancel anytime",
+  "bestValueOption": "Best value option",
+  "mostPopular": "MOST POPULAR",
+  "save": "Save",
+  "savePercent": "SAVE {percent}%",
+  "@savePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "alignQrCodeWithinFrame": "Align QR code within frame",
+  "keepYourDeviceSteady": "Keep your device steady",
+  "flash": "Flash",
+  "switchCamera": "Switch",
+  "addLogo": "Add Logo",
+  "logoAdded": "Logo Added",
+  "proFeature": "Pro Feature",
+  "updateQrCode": "Update QR Code",
+  "generateQrCode": "Generate QR Code",
+  "contactName": "Contact Name",
+  "enterContactName": "Enter contact name...",
+  "enterText": "Enter text...",
+  "theQrCodeIsReady": "The QR code is ready",
+  "share": "Share",
+  "save": "Save",
+  "searchQrCodes": "Search QR codes...",
+  "noQrCodesYet": "No QR codes yet",
+  "justNow": "Just now",
+  "minuteAgo": "{count} minute ago",
+  "@minuteAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesAgo": "{count} minutes ago",
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hourAgo": "{count} hour ago",
+  "@hourAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{count} hours ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayAgo": "{count} day ago",
+  "@dayAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{count} days ago",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "monthJan": "Jan",
+  "monthFeb": "Feb",
+  "monthMar": "Mar",
+  "monthApr": "Apr",
+  "monthMay": "May",
+  "monthJun": "Jun",
+  "monthJul": "Jul",
+  "monthAug": "Aug",
+  "monthSep": "Sep",
+  "monthOct": "Oct",
+  "monthNov": "Nov",
+  "monthDec": "Dec"
+}
