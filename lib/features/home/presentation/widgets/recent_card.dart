@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:qr_scanner/core/core.dart';
 import 'package:qr_scanner/core/shared/widgets/base_container.dart';
 import 'package:qr_scanner/core/shared/widgets/circle_icon.dart';
-import 'package:qr_scanner/features/home/data/models/recent_activity_model.dart';
+import 'package:qr_scanner/features/home/domain/models/recent_activity_model.dart';
 
 class RecentCard extends StatelessWidget {
   const RecentCard({super.key, required this.model, this.onPressed});
@@ -23,6 +22,7 @@ class RecentCard extends StatelessWidget {
           child: Row(
             children: [
               CirleIconn(
+                iconSize: 20,
                 iconPath: model.iconPath,
                 iconData: model.iconData,
                 color: model.color,

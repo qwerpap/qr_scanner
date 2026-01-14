@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/constants/image_source.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../models/recent_activity_model.dart';
+import '../../domain/models/recent_activity_model.dart';
 
 class RecentActivityData {
   RecentActivityData._();

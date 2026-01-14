@@ -12,4 +12,14 @@ class ScanResultRepositoryImpl implements ScanResultRepository {
   Future<void> saveQrCode(QrCodeData qrCodeData) async {
     await _localDataSource.saveQrCode(qrCodeData);
   }
+
+  @override
+  Future<List<QrCodeData>> getAllQrCodes() async {
+    return await _localDataSource.getAllQrCodes();
+  }
+
+  @override
+  Future<List<QrCodeData>> getRecentQrCodes({int limit = 10}) async {
+    return await _localDataSource.getRecentQrCodes(limit: limit);
+  }
 }

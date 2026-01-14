@@ -31,4 +31,48 @@ class ScanResultLocalDataSource {
       rethrow;
     }
   }
+
+  Future<List<QrCodeData>> getAllQrCodes() async {
+    try {
+      _talker.info('Getting all QR codes from local storage');
+      final prefs = await SharedPreferences.getInstance();
+      final savedCodes = prefs.getStringList(_keyQrCodes) ?? [];
+      
+      final qrCodes = <QrCodeData>[];
+      for (final codeJson in savedCodes) {
+        try {
+          final json = jsonDecode(codeJson) as Map<String, dynamic>;
+          final qrCode = QrCodeData(
+            rawData: json['rawData'] as String,
+            type: QrCodeType.values.firstWhere(
+              (e) => e.name == json['type'] as String,
+            ),
+            scannedAt: DateTime.parse(json['scannedAt'] as String),
+            title: json['title'] as String?,
+            url: json['url'] as String?,
+          );
+          qrCodes.add(qrCode);
+        } catch (e, stackTrace) {
+          _talker.error('Error parsing QR code: $codeJson', e, stackTrace);
+        }
+      }
+      
+      qrCodes.sort((a, b) => b.scannedAt.compareTo(a.scannedAt));
+      _talker.info('Retrieved ${qrCodes.length} QR codes');
+      return qrCodes;
+    } catch (e, stackTrace) {
+      _talker.error('Error getting QR codes', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<List<QrCodeData>> getRecentQrCodes({int limit = 10}) async {
+    try {
+      final allCodes = await getAllQrCodes();
+      return allCodes.take(limit).toList();
+    } catch (e, stackTrace) {
+      _talker.error('Error getting recent QR codes', e, stackTrace);
+      rethrow;
+    }
+  }
 }

@@ -20,6 +20,11 @@ import '../../features/scan_result/domain/repositories/scan_result_repository.da
 import '../../features/scan_result/domain/usecases/detect_qr_code_type_usecase.dart';
 import '../../features/scan_result/domain/usecases/save_qr_code_usecase.dart';
 import '../../features/scan_result/presentation/bloc/scan_result_bloc.dart';
+import '../../features/home/data/repositories/home_repository_impl.dart';
+import '../../features/home/domain/repositories/home_repository.dart';
+import '../../features/home/domain/usecases/get_recent_activities_usecase.dart';
+import '../../features/home/domain/usecases/get_saved_qr_codes_count_usecase.dart';
+import '../../features/home/presentation/cubit/home_cubit.dart';
 import '../services/app_side_effect_controller.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -36,6 +41,7 @@ class BlocProviders {
     _registerOnboardingBloc();
     _registerQrScannerCubit();
     _registerScanResultBloc();
+    _registerHomeCubit();
   }
 
   static void _registerTalker() {
@@ -125,6 +131,29 @@ class BlocProviders {
         detectQrCodeTypeUseCase: getIt<DetectQrCodeTypeUseCase>(),
         saveQrCodeUseCase: getIt<SaveQrCodeUseCase>(),
         sideEffectController: getIt<AppSideEffectController>(),
+      ),
+    );
+  }
+
+  static void _registerHomeCubit() {
+    getIt.registerLazySingleton<HomeRepository>(
+      () => HomeRepositoryImpl(
+        scanResultRepository: getIt<ScanResultRepository>(),
+      ),
+    );
+
+    getIt.registerLazySingleton<GetRecentActivitiesUseCase>(
+      () => GetRecentActivitiesUseCase(getIt<HomeRepository>()),
+    );
+
+    getIt.registerLazySingleton<GetSavedQrCodesCountUseCase>(
+      () => GetSavedQrCodesCountUseCase(getIt<HomeRepository>()),
+    );
+
+    getIt.registerFactory<HomeCubit>(
+      () => HomeCubit(
+        getRecentActivitiesUseCase: getIt<GetRecentActivitiesUseCase>(),
+        getSavedQrCodesCountUseCase: getIt<GetSavedQrCodesCountUseCase>(),
       ),
     );
   }
