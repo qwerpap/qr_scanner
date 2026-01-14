@@ -210,7 +210,7 @@ class _AppWithLocale extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title: 'QR Scanner',
+      title: 'QR Master',
       theme: AppTheme.light,
       darkTheme: AppTheme.dark,
       routerConfig: AppRouter.router,

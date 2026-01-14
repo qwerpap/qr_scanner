@@ -1,5 +1,5 @@
 name: qr_scanner
-description: "A new Flutter project."
+description: "QR Master - Powerful QR code scanner and generator app."
 publish_to: 'none' 
 version: 1.0.0+1
 
