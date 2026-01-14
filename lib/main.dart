@@ -18,10 +18,10 @@ class MyApp extends StatelessWidget {
     return BlocProvider<OnboardingBloc>(
       create: (context) => getIt<OnboardingBloc>(),
       child: MaterialApp.router(
-        title: 'QR Scanner',
-        theme: AppTheme.light,
-        darkTheme: AppTheme.dark,
-        routerConfig: AppRouter.router,
+      title: 'QR Scanner',
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      routerConfig: AppRouter.router,
       ),
     );
   }

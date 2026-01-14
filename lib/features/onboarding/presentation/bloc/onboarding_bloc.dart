@@ -31,10 +31,17 @@ class OnboardingBloc extends Bloc<OnboardingEvent, OnboardingState> {
       emit(const OnboardingChecking());
       _talker.info('Checking onboarding status');
 
-      final isCompleted = await _checkOnboardingCompletedUseCase();
+      final isCompleted = await _checkOnboardingCompletedUseCase()
+          .timeout(
+            const Duration(seconds: 5),
+            onTimeout: () {
+              _talker.warning('Timeout reading onboarding status, defaulting to not completed');
+              return false;
+            },
+          );
 
       if (isCompleted) {
-        _talker.info('Onboarding already completed, navigating to home');
+        _talker.info('Onboarding already completed, navigating to scan-qr');
         emit(const OnboardingCompleted());
       } else {
         _talker.info('Onboarding not completed, navigating to onboarding');

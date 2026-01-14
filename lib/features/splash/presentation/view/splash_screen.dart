@@ -34,40 +34,53 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocListener<OnboardingBloc, OnboardingState>(
-      listener: (context, state) {
+        listener: (context, state) {
         if (!_canNavigate) return;
         if (state is OnboardingCompleted) {
-          context.go('/home');
+          context.go('/scan-qr');
         } else if (state is OnboardingNotCompleted) {
           context.go('/onboarding');
-        }
-      },
-      child: Scaffold(
-        backgroundColor: AppColors.whiteColor,
-        body: Stack(
-          children: [
-            const AnimatedBackground(),
-            const SplashContent(),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 32),
-                  child: Center(
-                    child: Text(
-                      'Version 1.0.0',
-                      style: AppFonts.titleSmall.copyWith(
-                        color: AppColors.greyTextColor,
+        } else if (state is OnboardingError) {
+            context.go('/onboarding');
+          }
+        },
+      child: BlocBuilder<OnboardingBloc, OnboardingState>(
+        builder: (context, state) {
+          return Scaffold(
+          backgroundColor: AppColors.whiteColor,
+          body: Stack(
+            children: [
+              const AnimatedBackground(),
+              const SplashContent(),
+                if (state is OnboardingChecking)
+                  Container(
+                    color: AppColors.whiteColor.withOpacity(0.8),
+                    child: const Center(
+                      child: CircularProgressIndicator(),
+                    ),
+                  ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 32),
+                    child: Center(
+                      child: Text(
+                        'Version 1.0.0',
+                        style: AppFonts.titleSmall.copyWith(
+                          color: AppColors.greyTextColor,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
+            ],
+          ),
+          );
+        },
       ),
     );
   }

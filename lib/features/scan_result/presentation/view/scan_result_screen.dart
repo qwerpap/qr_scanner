@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:qr_scanner/core/bloc/bloc_providers.dart';
 import 'package:qr_scanner/core/shared/widgets/base_container.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_app_bar.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_divider.dart';
+import 'package:qr_scanner/core/utils/time_formatter.dart';
+import 'package:qr_scanner/features/scan_result/domain/entities/qr_code_type.dart';
+import 'package:qr_scanner/features/scan_result/presentation/bloc/scan_result_bloc.dart';
+import 'package:qr_scanner/features/scan_result/presentation/bloc/scan_result_event.dart';
+import 'package:qr_scanner/features/scan_result/presentation/bloc/scan_result_state.dart';
 import 'package:qr_scanner/features/scan_result/presentation/widgets/action_buttons_row.dart';
 import 'package:qr_scanner/features/scan_result/presentation/widgets/full_content_card.dart';
 import 'package:qr_scanner/features/scan_result/presentation/widgets/open_link_button.dart';
@@ -9,54 +17,123 @@ import 'package:qr_scanner/features/scan_result/presentation/widgets/qr_code_inf
 import 'package:qr_scanner/features/scan_result/presentation/widgets/qr_code_metadata.dart';
 import 'package:qr_scanner/features/scan_result/presentation/widgets/scan_success_header.dart';
 
-class ScanResultScreen extends StatelessWidget {
-  const ScanResultScreen({super.key});
+class ScanResultScreen extends StatefulWidget {
+  final String qrData;
+
+  const ScanResultScreen({super.key, required this.qrData});
 
   @override
+  State<ScanResultScreen> createState() => _ScanResultScreenState();
+}
+
+class _ScanResultScreenState extends State<ScanResultScreen> {
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: CustomAppBar(title: 'Scan Result', showCloseButton: true),
-      body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 22),
-        children: [
-          const ScanSuccessHeader(),
-          const SizedBox(height: 21),
-          BaseContainer(
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              children: [
-                const QrCodeInfoCard(
-                  title: 'Website URL',
-                  url: 'www.example.com/product ',
+    return BlocProvider(
+      create: (context) =>
+          getIt<ScanResultBloc>()..add(ScanResultInitialized(widget.qrData)),
+      child: Scaffold(
+        appBar: CustomAppBar(title: 'Scan Result', showCloseButton: true),
+        body: BlocBuilder<ScanResultBloc, ScanResultState>(
+          builder: (context, state) {
+              if (state.isLoading) {
+                return const Center(child: CircularProgressIndicator());
+              }
+
+              if (state.errorMessage != null && state.qrCodeData == null) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('Error: ${state.errorMessage}'),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () => context.pop(),
+                        child: const Text('Go Back'),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              final qrCodeData = state.qrCodeData;
+              if (qrCodeData == null) {
+                return const Center(child: Text('No QR code data'));
+              }
+
+              final scannedTime = TimeFormatter.formatScannedTime(
+                qrCodeData.scannedAt,
+              );
+
+              return ListView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24,
+                  vertical: 22,
                 ),
-                const CustomDivider(),
-                const FullContentCard(
-                  content: 'https://www.example.com/product/special-offer-2024',
-                ),
-                const CustomDivider(),
-                const QrCodeMetadata(scannedTime: 'Just now', type: 'URL'),
-              ],
-            ),
-          ),
-          const SizedBox(height: 21),
-          OpenLinkButton(
-            onPressed: () {
-              // TODO: Add open link action
-            },
-          ),
-          const SizedBox(height: 13),
-          ActionButtonsRow(
-            onCopy: () {
-              // TODO: Add copy action
-            },
-            onShare: () {
-              // TODO: Add share action
-            },
-            onSave: () {
-              // TODO: Add save action
-            },
-          ),
-        ],
+                children: [
+                  const ScanSuccessHeader(),
+                  const SizedBox(height: 21),
+                  BaseContainer(
+                    padding: const EdgeInsets.all(24),
+                    child: Column(
+                      children: [
+                        QrCodeInfoCard(
+                          title: qrCodeData.displayTitle,
+                          url: qrCodeData.displayUrl,
+                          iconPath: qrCodeData.type.iconPath,
+                        ),
+                        const CustomDivider(),
+                        FullContentCard(content: qrCodeData.rawData),
+                        const CustomDivider(),
+                        QrCodeMetadata(
+                          scannedTime: scannedTime,
+                          type: qrCodeData.type.displayName,
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 21),
+                  if (qrCodeData.type == QrCodeType.url)
+                    OpenLinkButton(
+                      onPressed: state.isSaving
+                          ? null
+                          : () {
+                              context.read<ScanResultBloc>().add(
+                                const ScanResultOpenLinkRequested(),
+                              );
+                            },
+                    ),
+                  if (qrCodeData.type == QrCodeType.url)
+                    const SizedBox(height: 13),
+                  ActionButtonsRow(
+                    onCopy: state.isSaving
+                        ? null
+                        : () {
+                            context.read<ScanResultBloc>().add(
+                              const ScanResultCopyRequested(),
+                            );
+                          },
+                    onShare: state.isSaving
+                        ? null
+                        : () {
+                            context.read<ScanResultBloc>().add(
+                              const ScanResultShareRequested(),
+                            );
+                          },
+                    onSave: state.isSaving
+                        ? null
+                        : () {
+                            context.read<ScanResultBloc>().add(
+                              const ScanResultSaveRequested(),
+                            );
+                          },
+                    isSaving: state.isSaving,
+                    isSaved: state.isSaved,
+                  ),
+                ],
+              );
+          },
+        ),
       ),
     );
   }

@@ -35,61 +35,61 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       child: BlocListener<OnboardingBloc, OnboardingState>(
         listener: (context, state) {
           if (state is OnboardingCompleted) {
-            context.go('/home');
+            context.go('/scan-qr');
           }
         },
         child: BlocBuilder<OnboardingCubit, cubit_state.OnboardingState>(
-          builder: (context, state) {
-            final currentScreen = OnboardingData.screens[state.currentIndex];
+        builder: (context, state) {
+          final currentScreen = OnboardingData.screens[state.currentIndex];
 
-            return Scaffold(
-              body: OnboardingGradientBackground(
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: PageView.builder(
-                          controller: _pageController,
-                          onPageChanged: (index) {
-                            context.read<OnboardingCubit>().changePage(index);
-                          },
-                          itemCount: OnboardingData.screens.length,
-                          itemBuilder: (context, index) {
-                            return OnboardingPageContent(
-                              screen: OnboardingData.screens[index],
-                            );
-                          },
-                        ),
-                      ),
-                      OnboardingBottomSection(
-                        currentScreen: currentScreen,
-                        currentIndex: state.currentIndex,
-                        totalScreens: OnboardingData.screens.length,
-                        onNextPressed: () {
-                          final cubit = context.read<OnboardingCubit>();
-                          if (cubit.canGoNext()) {
-                            _pageController.nextPage(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          } else {
-                            context.read<OnboardingBloc>().add(
-                              const CompleteOnboarding(),
-                            );
-                          }
+          return Scaffold(
+            body: OnboardingGradientBackground(
+              child: SafeArea(
+                child: Column(
+                  children: [
+                    Expanded(
+                      child: PageView.builder(
+                        controller: _pageController,
+                        onPageChanged: (index) {
+                          context.read<OnboardingCubit>().changePage(index);
                         },
-                        onSkipPressed: () {
-                          context.read<OnboardingBloc>().add(
-                            const CompleteOnboarding(),
+                        itemCount: OnboardingData.screens.length,
+                        itemBuilder: (context, index) {
+                          return OnboardingPageContent(
+                            screen: OnboardingData.screens[index],
                           );
                         },
                       ),
-                    ],
-                  ),
+                    ),
+                    OnboardingBottomSection(
+                      currentScreen: currentScreen,
+                      currentIndex: state.currentIndex,
+                      totalScreens: OnboardingData.screens.length,
+                      onNextPressed: () {
+                        final cubit = context.read<OnboardingCubit>();
+                        if (cubit.canGoNext()) {
+                          _pageController.nextPage(
+                            duration: const Duration(milliseconds: 300),
+                            curve: Curves.easeInOut,
+                          );
+                        } else {
+                            context.read<OnboardingBloc>().add(
+                              const CompleteOnboarding(),
+                            );
+                        }
+                      },
+                      onSkipPressed: () {
+                          context.read<OnboardingBloc>().add(
+                            const CompleteOnboarding(),
+                          );
+                      },
+                    ),
+                  ],
                 ),
               ),
-            );
-          },
+            ),
+          );
+        },
         ),
       ),
     );

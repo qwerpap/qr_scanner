@@ -45,5 +45,16 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to your camera to scan QR codes</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to scan QR codes from images</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to your photo library to save and scan images</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>http</string>
+		<string>https</string>
+	</array>
 </dict>
 </plist>

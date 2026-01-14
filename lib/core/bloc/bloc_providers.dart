@@ -13,6 +13,14 @@ import '../../features/onboarding/domain/repositories/onboarding_repository.dart
 import '../../features/onboarding/domain/usecases/check_onboarding_completed_usecase.dart';
 import '../../features/onboarding/domain/usecases/set_onboarding_completed_usecase.dart';
 import '../../features/onboarding/presentation/bloc/onboarding_bloc.dart';
+import '../../features/scan_qr/presentation/cubit/qr_scanner_cubit.dart';
+import '../../features/scan_result/data/datasources/scan_result_local_datasource.dart';
+import '../../features/scan_result/data/repositories/scan_result_repository_impl.dart';
+import '../../features/scan_result/domain/repositories/scan_result_repository.dart';
+import '../../features/scan_result/domain/usecases/detect_qr_code_type_usecase.dart';
+import '../../features/scan_result/domain/usecases/save_qr_code_usecase.dart';
+import '../../features/scan_result/presentation/bloc/scan_result_bloc.dart';
+import '../services/app_side_effect_controller.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -21,14 +29,23 @@ class BlocProviders {
 
   static void setup() {
     _registerTalker();
+    _registerAppSideEffectController();
     _registerNavigationCubit();
     _registerSplashCubit();
     _registerOnboardingCubit();
     _registerOnboardingBloc();
+    _registerQrScannerCubit();
+    _registerScanResultBloc();
   }
 
   static void _registerTalker() {
     getIt.registerLazySingleton<Talker>(() => TalkerFlutter.init());
+  }
+
+  static void _registerAppSideEffectController() {
+    getIt.registerLazySingleton<AppSideEffectController>(
+      () => AppSideEffectController(),
+    );
   }
 
   static void _registerNavigationCubit() {
@@ -76,6 +93,38 @@ class BlocProviders {
       () => OnboardingBloc(
         checkOnboardingCompletedUseCase: getIt<CheckOnboardingCompletedUseCase>(),
         setOnboardingCompletedUseCase: getIt<SetOnboardingCompletedUseCase>(),
+      ),
+    );
+  }
+
+  static void _registerQrScannerCubit() {
+    getIt.registerFactory<QrScannerCubit>(() => QrScannerCubit());
+  }
+
+  static void _registerScanResultBloc() {
+    getIt.registerLazySingleton<ScanResultLocalDataSource>(
+      () => ScanResultLocalDataSource(talker: getIt<Talker>()),
+    );
+
+    getIt.registerLazySingleton<ScanResultRepository>(
+      () => ScanResultRepositoryImpl(
+        localDataSource: getIt<ScanResultLocalDataSource>(),
+      ),
+    );
+
+    getIt.registerLazySingleton<DetectQrCodeTypeUseCase>(
+      () => DetectQrCodeTypeUseCase(),
+    );
+
+    getIt.registerLazySingleton<SaveQrCodeUseCase>(
+      () => SaveQrCodeUseCase(getIt<ScanResultRepository>()),
+    );
+
+    getIt.registerFactory<ScanResultBloc>(
+      () => ScanResultBloc(
+        detectQrCodeTypeUseCase: getIt<DetectQrCodeTypeUseCase>(),
+        saveQrCodeUseCase: getIt<SaveQrCodeUseCase>(),
+        sideEffectController: getIt<AppSideEffectController>(),
       ),
     );
   }

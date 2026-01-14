@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:qr_scanner/core/constants/image_source.dart';
 import 'package:qr_scanner/core/core.dart';
 import 'package:qr_scanner/core/shared/widgets/circle_icon.dart';
 
@@ -8,10 +7,12 @@ class QrCodeInfoCard extends StatelessWidget {
     super.key,
     required this.title,
     required this.url,
+    required this.iconPath,
   });
 
   final String title;
   final String url;
+  final String iconPath;
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +20,7 @@ class QrCodeInfoCard extends StatelessWidget {
       children: [
         CirleIconn(
           size: 48,
-          iconPath: ImageSource.link,
+          iconPath: iconPath,
           iconData: null,
           iconSize: 20,
           color: AppColors.primaryColor,

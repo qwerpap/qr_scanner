@@ -106,7 +106,7 @@ class _SplashContentState extends State<SplashContent>
 
   void _startAnimations() {
     if (mounted) {
-      _logoController.forward();
+    _logoController.forward();
     }
     Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) _titleController.forward();

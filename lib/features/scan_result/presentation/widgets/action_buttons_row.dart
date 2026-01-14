@@ -7,11 +7,15 @@ class ActionButtonsRow extends StatelessWidget {
     this.onCopy,
     this.onShare,
     this.onSave,
+    this.isSaving = false,
+    this.isSaved = false,
   });
 
   final VoidCallback? onCopy;
   final VoidCallback? onShare;
   final VoidCallback? onSave;
+  final bool isSaving;
+  final bool isSaved;
 
   @override
   Widget build(BuildContext context) {
@@ -35,8 +39,8 @@ class ActionButtonsRow extends StatelessWidget {
         const SizedBox(width: 12),
         Expanded(
           child: ActionButton(
-            icon: Icons.bookmark_border,
-            label: 'Save',
+            icon: isSaved ? Icons.bookmark : Icons.bookmark_border,
+            label: isSaving ? 'Saving...' : 'Save',
             onTap: onSave ?? () {},
           ),
         ),

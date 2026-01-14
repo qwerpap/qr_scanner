@@ -23,7 +23,7 @@ class QrCodeReadyScreen extends StatelessWidget {
               delegate: SliverChildListDelegate([
                 const SuccessHeader(),
                 const SizedBox(height: 27),
-                const Center(child: QrCodeSection()),
+                const Center(child: QrCodeSection(hasPermission: false)),
                 const SizedBox(height: 40),
                 QrReadyActionButtons(
                   onShareTap: () {

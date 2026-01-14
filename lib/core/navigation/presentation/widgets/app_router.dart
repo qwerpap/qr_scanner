@@ -6,6 +6,7 @@ import 'package:qr_scanner/features/create_qr/presentation/view/qr_code_ready_sc
 import 'package:qr_scanner/features/onboarding/presentation/view/onboarding_screen.dart';
 import 'package:qr_scanner/features/paywall/presentation/view/paywall_screen.dart';
 import 'package:qr_scanner/features/scan_result/presentation/view/scan_result_screen.dart';
+import 'package:qr_scanner/features/scan_result/presentation/view/notification_handler.dart';
 import 'package:qr_scanner/features/splash/presentation/view/splash_screen.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../bloc/bloc_providers.dart';
@@ -96,10 +97,14 @@ class AppRouter {
           ),
           GoRoute(
             path: '/scan_result',
-            pageBuilder: (context, state) => PageTransitions.fadeTransition(
-              child: const ScanResultScreen(),
-              state: state,
-            ),
+            pageBuilder: (context, state) {
+              final qrData = state.extra as Map<String, dynamic>?;
+              final qrDataString = qrData?['qrData'] as String? ?? '';
+              return PageTransitions.fadeTransition(
+                child: ScanResultScreen(qrData: qrDataString),
+                state: state,
+              );
+            },
           ),
           GoRoute(
             path: '/qr_code_ready',
@@ -210,12 +215,14 @@ class _NavigationStateUpdaterState extends State<_NavigationStateUpdater> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: widget.child,
-      extendBody: true,
-      bottomNavigationBar: const CustomBottomNavigation(),
-      floatingActionButton: const CustomFloatingActionButton(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+    return NotificationHandler(
+      child: Scaffold(
+        body: widget.child,
+        extendBody: true,
+        bottomNavigationBar: const CustomBottomNavigation(),
+        floatingActionButton: const CustomFloatingActionButton(),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      ),
     );
   }
 }
