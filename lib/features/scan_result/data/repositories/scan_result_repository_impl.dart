@@ -22,4 +22,14 @@ class ScanResultRepositoryImpl implements ScanResultRepository {
   Future<List<QrCodeData>> getRecentQrCodes({int limit = 10}) async {
     return await _localDataSource.getRecentQrCodes(limit: limit);
   }
+
+  @override
+  Future<void> deleteQrCode(String rawData) async {
+    await _localDataSource.deleteQrCode(rawData);
+  }
+
+  @override
+  Future<void> clearAllQrCodes() async {
+    await _localDataSource.clearAllQrCodes();
+  }
 }

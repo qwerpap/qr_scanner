@@ -25,6 +25,12 @@ import '../../features/home/domain/repositories/home_repository.dart';
 import '../../features/home/domain/usecases/get_recent_activities_usecase.dart';
 import '../../features/home/domain/usecases/get_saved_qr_codes_count_usecase.dart';
 import '../../features/home/presentation/cubit/home_cubit.dart';
+import '../../features/history/data/repositories/history_repository_impl.dart';
+import '../../features/history/domain/repositories/history_repository.dart';
+import '../../features/history/domain/usecases/clear_history_usecase.dart';
+import '../../features/history/domain/usecases/delete_qr_code_usecase.dart';
+import '../../features/history/domain/usecases/get_history_usecase.dart';
+import '../../features/history/presentation/bloc/history_bloc.dart';
 import '../services/app_side_effect_controller.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -42,6 +48,7 @@ class BlocProviders {
     _registerQrScannerCubit();
     _registerScanResultBloc();
     _registerHomeCubit();
+    _registerHistoryBloc();
   }
 
   static void _registerTalker() {
@@ -154,6 +161,34 @@ class BlocProviders {
       () => HomeCubit(
         getRecentActivitiesUseCase: getIt<GetRecentActivitiesUseCase>(),
         getSavedQrCodesCountUseCase: getIt<GetSavedQrCodesCountUseCase>(),
+      ),
+    );
+  }
+
+  static void _registerHistoryBloc() {
+    getIt.registerLazySingleton<HistoryRepository>(
+      () => HistoryRepositoryImpl(
+        scanResultRepository: getIt<ScanResultRepository>(),
+      ),
+    );
+
+    getIt.registerLazySingleton<GetHistoryUseCase>(
+      () => GetHistoryUseCase(getIt<HistoryRepository>()),
+    );
+
+    getIt.registerLazySingleton<DeleteQrCodeUseCase>(
+      () => DeleteQrCodeUseCase(getIt<HistoryRepository>()),
+    );
+
+    getIt.registerLazySingleton<ClearHistoryUseCase>(
+      () => ClearHistoryUseCase(getIt<HistoryRepository>()),
+    );
+
+    getIt.registerFactory<HistoryBloc>(
+      () => HistoryBloc(
+        getHistoryUseCase: getIt<GetHistoryUseCase>(),
+        deleteQrCodeUseCase: getIt<DeleteQrCodeUseCase>(),
+        clearHistoryUseCase: getIt<ClearHistoryUseCase>(),
       ),
     );
   }

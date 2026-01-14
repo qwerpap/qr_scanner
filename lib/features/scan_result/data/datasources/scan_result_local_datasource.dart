@@ -75,4 +75,39 @@ class ScanResultLocalDataSource {
       rethrow;
     }
   }
+
+  Future<void> deleteQrCode(String rawData) async {
+    try {
+      _talker.info('Deleting QR code from local storage');
+      final prefs = await SharedPreferences.getInstance();
+      final savedCodes = prefs.getStringList(_keyQrCodes) ?? [];
+      
+      savedCodes.removeWhere((codeJson) {
+        try {
+          final json = jsonDecode(codeJson) as Map<String, dynamic>;
+          return json['rawData'] as String == rawData;
+        } catch (_) {
+          return false;
+        }
+      });
+      
+      await prefs.setStringList(_keyQrCodes, savedCodes);
+      _talker.info('QR code deleted successfully');
+    } catch (e, stackTrace) {
+      _talker.error('Error deleting QR code', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> clearAllQrCodes() async {
+    try {
+      _talker.info('Clearing all QR codes from local storage');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_keyQrCodes);
+      _talker.info('All QR codes cleared successfully');
+    } catch (e, stackTrace) {
+      _talker.error('Error clearing QR codes', e, stackTrace);
+      rethrow;
+    }
+  }
 }
