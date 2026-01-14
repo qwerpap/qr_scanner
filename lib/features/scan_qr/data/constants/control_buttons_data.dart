@@ -6,6 +6,9 @@ class ControlButtonsData {
     required VoidCallback onFlashTap,
     required VoidCallback onSwitchTap,
     required VoidCallback onGalleryTap,
+    bool isFlashActive = false,
+    bool isSwitchActive = false,
+    bool isGalleryActive = false,
   }) {
     return [
       ControlButtonModel(
@@ -13,18 +16,21 @@ class ControlButtonsData {
         label: 'Flash',
         icon: Icons.flash_on,
         onTap: onFlashTap,
+        isActive: isFlashActive,
       ),
       ControlButtonModel(
         id: 'switch',
         label: 'Switch',
         icon: Icons.cameraswitch,
         onTap: onSwitchTap,
+        isActive: isSwitchActive,
       ),
       ControlButtonModel(
         id: 'gallery',
         label: 'Gallery',
         icon: Icons.photo_library,
         onTap: onGalleryTap,
+        isActive: isGalleryActive,
       ),
     ];
   }

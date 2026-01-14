@@ -59,6 +59,7 @@ class QrCodeData extends Equatable {
   final DateTime scannedAt;
   final String? title;
   final String? url;
+  final bool isCreated;
 
   const QrCodeData({
     required this.rawData,
@@ -66,6 +67,7 @@ class QrCodeData extends Equatable {
     required this.scannedAt,
     this.title,
     this.url,
+    this.isCreated = false,
   });
 
   String get displayTitle {
@@ -104,5 +106,5 @@ class QrCodeData extends Equatable {
   }
 
   @override
-  List<Object?> get props => [rawData, type, scannedAt, title, url];
+  List<Object?> get props => [rawData, type, scannedAt, title, url, isCreated];
 }

@@ -31,6 +31,18 @@ import '../../features/history/domain/usecases/clear_history_usecase.dart';
 import '../../features/history/domain/usecases/delete_qr_code_usecase.dart';
 import '../../features/history/domain/usecases/get_history_usecase.dart';
 import '../../features/history/presentation/bloc/history_bloc.dart';
+import '../../features/my_qr_codes/data/datasources/my_qr_codes_local_datasource.dart';
+import '../../features/my_qr_codes/data/repositories/my_qr_codes_repository_impl.dart';
+import '../../features/my_qr_codes/domain/repositories/my_qr_codes_repository.dart';
+import '../../features/my_qr_codes/domain/usecases/delete_created_qr_code_usecase.dart';
+import '../../features/my_qr_codes/domain/usecases/get_created_qr_codes_usecase.dart';
+import '../../features/my_qr_codes/domain/usecases/save_created_qr_code_usecase.dart';
+import '../../features/my_qr_codes/domain/usecases/search_created_qr_codes_usecase.dart';
+import '../../features/my_qr_codes/domain/usecases/update_created_qr_code_usecase.dart';
+import '../../features/my_qr_codes/presentation/bloc/my_qr_codes_bloc.dart';
+import '../../features/create_qr/domain/usecases/generate_qr_code_usecase.dart';
+import '../../features/create_qr/domain/usecases/validate_qr_code_data_usecase.dart';
+import '../../features/create_qr/presentation/cubit/create_qr_code_cubit.dart';
 import '../services/app_side_effect_controller.dart';
 
 final GetIt getIt = GetIt.instance;
@@ -49,6 +61,8 @@ class BlocProviders {
     _registerScanResultBloc();
     _registerHomeCubit();
     _registerHistoryBloc();
+    _registerMyQrCodesBloc();
+    _registerCreateQrCodeCubit();
   }
 
   static void _registerTalker() {
@@ -189,6 +203,71 @@ class BlocProviders {
         getHistoryUseCase: getIt<GetHistoryUseCase>(),
         deleteQrCodeUseCase: getIt<DeleteQrCodeUseCase>(),
         clearHistoryUseCase: getIt<ClearHistoryUseCase>(),
+      ),
+    );
+  }
+
+  static void _registerMyQrCodesBloc() {
+    getIt.registerLazySingleton<MyQrCodesLocalDataSource>(
+      () => MyQrCodesLocalDataSource(talker: getIt<Talker>()),
+    );
+
+    getIt.registerLazySingleton<MyQrCodesRepository>(
+      () => MyQrCodesRepositoryImpl(
+        localDataSource: getIt<MyQrCodesLocalDataSource>(),
+      ),
+    );
+
+    getIt.registerLazySingleton<GetCreatedQrCodesUseCase>(
+      () => GetCreatedQrCodesUseCase(getIt<MyQrCodesRepository>()),
+    );
+
+    getIt.registerLazySingleton<SearchCreatedQrCodesUseCase>(
+      () => SearchCreatedQrCodesUseCase(getIt<MyQrCodesRepository>()),
+    );
+
+    getIt.registerLazySingleton<DeleteCreatedQrCodeUseCase>(
+      () => DeleteCreatedQrCodeUseCase(getIt<MyQrCodesRepository>()),
+    );
+
+    getIt.registerLazySingleton<SaveCreatedQrCodeUseCase>(
+      () => SaveCreatedQrCodeUseCase(
+        repository: getIt<MyQrCodesRepository>(),
+        scanResultRepository: getIt<ScanResultRepository>(),
+      ),
+    );
+
+    getIt.registerFactory<MyQrCodesBloc>(
+      () => MyQrCodesBloc(
+        getCreatedQrCodesUseCase: getIt<GetCreatedQrCodesUseCase>(),
+        searchCreatedQrCodesUseCase: getIt<SearchCreatedQrCodesUseCase>(),
+        deleteCreatedQrCodeUseCase: getIt<DeleteCreatedQrCodeUseCase>(),
+      ),
+    );
+  }
+
+  static void _registerCreateQrCodeCubit() {
+    getIt.registerLazySingleton<GenerateQrCodeUseCase>(
+      () => GenerateQrCodeUseCase(),
+    );
+
+    getIt.registerLazySingleton<ValidateQrCodeDataUseCase>(
+      () => ValidateQrCodeDataUseCase(),
+    );
+
+    getIt.registerLazySingleton<UpdateCreatedQrCodeUseCase>(
+      () => UpdateCreatedQrCodeUseCase(
+        repository: getIt<MyQrCodesRepository>(),
+        scanResultRepository: getIt<ScanResultRepository>(),
+      ),
+    );
+
+    getIt.registerFactory<CreateQrCodeCubit>(
+      () => CreateQrCodeCubit(
+        generateQrCodeUseCase: getIt<GenerateQrCodeUseCase>(),
+        validateQrCodeDataUseCase: getIt<ValidateQrCodeDataUseCase>(),
+        saveCreatedQrCodeUseCase: getIt<SaveCreatedQrCodeUseCase>(),
+        updateCreatedQrCodeUseCase: getIt<UpdateCreatedQrCodeUseCase>(),
       ),
     );
   }

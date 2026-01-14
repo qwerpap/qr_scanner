@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:qr_scanner/features/create_qr/presentation/cubit/create_qr_code_cubit.dart';
 import 'package:qr_scanner/features/create_qr/presentation/view/create_qr_code_screen.dart';
 import 'package:qr_scanner/features/create_qr/presentation/view/qr_code_ready_screen.dart';
+import 'package:qr_scanner/features/my_qr_codes/domain/models/created_qr_code_model.dart';
+import 'package:qr_scanner/features/my_qr_codes/presentation/view/qr_code_view_screen.dart';
 import 'package:qr_scanner/features/onboarding/presentation/view/onboarding_screen.dart';
 import 'package:qr_scanner/features/paywall/presentation/view/paywall_screen.dart';
 import 'package:qr_scanner/features/scan_result/presentation/view/scan_result_screen.dart';
@@ -107,11 +110,53 @@ class AppRouter {
             },
           ),
           GoRoute(
-            path: '/qr_code_ready',
-            pageBuilder: (context, state) => PageTransitions.fadeTransition(
-              child: const QrCodeReadyScreen(),
+            path: '/qr_code_view',
+            pageBuilder: (context, state) => PageTransitions.slideTransition(
+              child: const QrCodeViewScreen(),
               state: state,
             ),
+          ),
+          GoRoute(
+            path: '/qr_code_ready',
+            pageBuilder: (context, state) {
+              final extra = state.extra;
+              
+              // If extra is CreateQrCodeCubit, use it directly
+              if (extra is CreateQrCodeCubit) {
+                return PageTransitions.fadeTransition(
+                  child: BlocProvider.value(
+                    value: extra,
+                    child: const QrCodeReadyScreen(),
+                  ),
+                  state: state,
+                );
+              }
+              
+              // If extra is Map with qrCode, create new cubit and set it
+              if (extra is Map<String, dynamic>) {
+                final qrCode = extra['qrCode'] as CreatedQrCodeModel?;
+                if (qrCode != null) {
+                  final cubit = getIt<CreateQrCodeCubit>();
+                  cubit.setGeneratedQrCode(qrCode);
+                  return PageTransitions.fadeTransition(
+                    child: BlocProvider.value(
+                      value: cubit,
+                      child: const QrCodeReadyScreen(),
+                    ),
+                    state: state,
+                  );
+                }
+              }
+              
+              // Fallback: create new cubit without QR code
+              return PageTransitions.fadeTransition(
+                child: BlocProvider(
+                  create: (context) => getIt<CreateQrCodeCubit>(),
+                  child: const QrCodeReadyScreen(),
+                ),
+                state: state,
+              );
+            },
           ),
           GoRoute(
             path: NavigationConstants.history,
@@ -169,7 +214,8 @@ class _NavigationStateUpdaterState extends State<_NavigationStateUpdater> {
         if (!mounted) return;
         final currentLocation = GoRouterState.of(context).uri.path;
         final newIndex = NavigationUtils.getCurrentIndex(currentLocation);
-        if (newIndex != cubit.state.currentIndex) {
+        // Only update if route is a main navigation tab (not null)
+        if (newIndex != null && newIndex != cubit.state.currentIndex) {
           cubit.updateCurrentRoute(currentLocation);
         }
       });

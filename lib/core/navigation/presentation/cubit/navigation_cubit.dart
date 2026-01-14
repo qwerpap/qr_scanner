@@ -11,14 +11,15 @@ class NavigationCubit extends Cubit<NavigationState> {
     required bool isDark,
   }) : super(
           NavigationState(
-            currentIndex: NavigationUtils.getCurrentIndex(currentLocation),
+            currentIndex: NavigationUtils.getCurrentIndex(currentLocation) ?? 0,
             isDark: isDark,
           ),
         );
 
   void updateCurrentRoute(String currentLocation) {
     final newIndex = NavigationUtils.getCurrentIndex(currentLocation);
-    if (newIndex != state.currentIndex) {
+    // Only update if route is a main navigation tab (not null)
+    if (newIndex != null && newIndex != state.currentIndex) {
       emit(state.copyWith(currentIndex: newIndex));
     }
   }
@@ -31,8 +32,10 @@ class NavigationCubit extends Cubit<NavigationState> {
 
   void navigateToRoute(BuildContext context, String route) {
     final newIndex = NavigationUtils.getCurrentIndex(route);
-    // Update index immediately for instant UI feedback
-    emit(state.copyWith(currentIndex: newIndex));
+    // Only update index if route is a main navigation tab
+    if (newIndex != null && newIndex != state.currentIndex) {
+      emit(state.copyWith(currentIndex: newIndex));
+    }
     context.go(route);
   }
 }

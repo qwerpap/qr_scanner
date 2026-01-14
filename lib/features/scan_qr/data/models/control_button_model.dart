@@ -7,13 +7,15 @@ class ControlButtonModel extends Equatable {
     required this.label,
     required this.icon,
     required this.onTap,
+    this.isActive = false,
   });
 
   final String id;
   final String label;
   final IconData icon;
   final VoidCallback onTap;
+  final bool isActive;
 
   @override
-  List<Object?> get props => [id, label, icon];
+  List<Object?> get props => [id, label, icon, isActive];
 }

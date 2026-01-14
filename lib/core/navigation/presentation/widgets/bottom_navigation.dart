@@ -17,6 +17,7 @@ class CustomBottomNavigation extends StatelessWidget {
   static const double _barHeight = 80.0;
   static const double _fabWidth = 52.0;
   static const double _horizontalPadding = 8.0;
+  static const double _bottomPadding = 10.0;
   static const double _iconSize = 20.0;
   static const double _iconTextSpacing = 4.0;
   static const double _itemVerticalPadding = 8.0;
@@ -40,7 +41,7 @@ class CustomBottomNavigation extends StatelessWidget {
           padding: EdgeInsets.zero,
           child: SafeArea(
             top: false,
-            minimum: EdgeInsets.zero,
+            minimum: EdgeInsets.only(bottom: _bottomPadding),
             child: SizedBox(
               height: _barHeight,
               child: Padding(

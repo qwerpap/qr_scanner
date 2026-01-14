@@ -32,4 +32,9 @@ class ScanResultRepositoryImpl implements ScanResultRepository {
   Future<void> clearAllQrCodes() async {
     await _localDataSource.clearAllQrCodes();
   }
+
+  @override
+  Future<void> updateQrCode(QrCodeData qrCodeData) async {
+    await _localDataSource.updateQrCode(qrCodeData);
+  }
 }

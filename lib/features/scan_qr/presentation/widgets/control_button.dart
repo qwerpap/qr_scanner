@@ -12,6 +12,14 @@ class ControlButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final containerColor = model.isActive
+        ? AppColors.primaryColor
+        : AppColors.scaffoldBgColor;
+    final iconColor = model.isActive
+        ? AppColors.whiteColor
+        : AppColors.greyTextColor;
+    final textColor = AppColors.greyTextColor;
+
     return Material(
       color: Colors.transparent,
       child: InkWell(
@@ -25,18 +33,21 @@ class ControlButton extends StatelessWidget {
               width: 48,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: AppColors.scaffoldBgColor,
+                color: containerColor,
               ),
               child: Icon(
                 model.icon,
-                color: AppColors.greyTextColor,
+                color: iconColor,
                 size: 21,
               ),
             ),
             const SizedBox(height: 8),
             Text(
               model.label,
-              style: AppFonts.titleSmall.copyWith(fontSize: 14),
+              style: AppFonts.titleSmall.copyWith(
+                fontSize: 14,
+                color: textColor,
+              ),
             ),
           ],
         ),

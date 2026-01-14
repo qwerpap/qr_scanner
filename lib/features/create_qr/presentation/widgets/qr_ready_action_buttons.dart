@@ -6,10 +6,12 @@ class QrReadyActionButtons extends StatelessWidget {
     super.key,
     required this.onShareTap,
     required this.onSaveTap,
+    this.showSaveButton = true,
   });
 
   final VoidCallback onShareTap;
   final VoidCallback onSaveTap;
+  final bool showSaveButton;
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +24,16 @@ class QrReadyActionButtons extends StatelessWidget {
             onTap: onShareTap,
           ),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _ActionButton(
-            icon: Icons.bookmark,
-            label: 'Save',
-            onTap: onSaveTap,
+        if (showSaveButton) ...[
+          const SizedBox(width: 12),
+          Expanded(
+            child: _ActionButton(
+              icon: Icons.bookmark,
+              label: 'Save',
+              onTap: onSaveTap,
+            ),
           ),
-        ),
+        ],
       ],
     );
   }

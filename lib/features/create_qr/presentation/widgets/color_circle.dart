@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/theme/app_colors.dart';
 
 class ColorCircle extends StatelessWidget {
-  const ColorCircle({super.key, required this.color});
+  const ColorCircle({
+    super.key,
+    required this.color,
+    this.isSelected = false,
+  });
 
   final Color color;
+  final bool isSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +19,10 @@ class ColorCircle extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: color,
-        border: Border.all(width: 2, color: AppColors.borderColor),
+        border: Border.all(
+          width: isSelected ? 3 : 2,
+          color: isSelected ? AppColors.primaryColor : AppColors.borderColor,
+        ),
       ),
     );
   }

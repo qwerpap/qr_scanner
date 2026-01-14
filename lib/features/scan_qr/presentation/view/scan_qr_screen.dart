@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
@@ -107,6 +108,9 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
                             onGalleryTap: () {
                               _handleGalleryTap(blocContext, qrState);
                             },
+                            isFlashActive: qrState.isFlashOn,
+                            isSwitchActive: qrState.currentFacing == CameraFacing.front,
+                            isGalleryActive: qrState.isPickingImage,
                           ),
                         ),
                       ),

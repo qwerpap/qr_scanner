@@ -18,9 +18,9 @@ class HistoryRepositoryImpl implements HistoryRepository {
 
     if (categoryId != null && categoryId != 'all') {
       if (categoryId == 'scanned') {
-        filteredCodes = allCodes;
+        filteredCodes = allCodes.where((code) => !code.isCreated).toList();
       } else if (categoryId == 'created') {
-        filteredCodes = [];
+        filteredCodes = allCodes.where((code) => code.isCreated).toList();
       }
     }
 
@@ -36,9 +36,9 @@ class HistoryRepositoryImpl implements HistoryRepository {
     var filteredCodes = qrCodes;
     if (categoryId != null && categoryId != 'all') {
       if (categoryId == 'scanned') {
-        filteredCodes = qrCodes;
+        filteredCodes = qrCodes.where((code) => !code.isCreated).toList();
       } else if (categoryId == 'created') {
-        filteredCodes = [];
+        filteredCodes = qrCodes.where((code) => code.isCreated).toList();
       }
     }
 

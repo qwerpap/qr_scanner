@@ -17,6 +17,7 @@ class CustomSliverAppBar extends StatelessWidget {
     this.foregroundColor,
     this.showCloseButton = false,
     this.showDivider = true,
+    this.showShadow = true,
     this.pinned = true,
     this.floating = false,
   });
@@ -31,6 +32,7 @@ class CustomSliverAppBar extends StatelessWidget {
   final Color? foregroundColor;
   final bool showCloseButton;
   final bool showDivider;
+  final bool showShadow;
   final bool pinned;
   final bool floating;
 
@@ -79,14 +81,16 @@ class CustomSliverAppBar extends StatelessWidget {
       flexibleSpace: Container(
         decoration: BoxDecoration(
           color: backgroundColor ?? AppColors.whiteColor,
-          boxShadow: [
-            BoxShadow(
-              color: const Color.fromRGBO(0, 0, 0, 0.06),
-              offset: const Offset(0, 4),
-              blurRadius: 16,
-              spreadRadius: 0,
-            ),
-          ],
+          boxShadow: showShadow
+              ? [
+                  BoxShadow(
+                    color: const Color.fromRGBO(0, 0, 0, 0.06),
+                    offset: const Offset(0, 4),
+                    blurRadius: 16,
+                    spreadRadius: 0,
+                  ),
+                ]
+              : null,
         ),
       ),
       bottom: showDivider

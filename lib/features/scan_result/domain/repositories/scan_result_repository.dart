@@ -6,4 +6,5 @@ abstract class ScanResultRepository {
   Future<List<QrCodeData>> getRecentQrCodes({int limit = 10});
   Future<void> deleteQrCode(String rawData);
   Future<void> clearAllQrCodes();
+  Future<void> updateQrCode(QrCodeData qrCodeData);
 }

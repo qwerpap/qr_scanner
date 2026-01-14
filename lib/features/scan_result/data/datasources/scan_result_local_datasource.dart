@@ -21,6 +21,7 @@ class ScanResultLocalDataSource {
         'scannedAt': qrCodeData.scannedAt.toIso8601String(),
         'title': qrCodeData.title,
         'url': qrCodeData.url,
+        'isCreated': qrCodeData.isCreated,
       };
 
       savedCodes.add(jsonEncode(qrCodeJson));
@@ -50,6 +51,7 @@ class ScanResultLocalDataSource {
             scannedAt: DateTime.parse(json['scannedAt'] as String),
             title: json['title'] as String?,
             url: json['url'] as String?,
+            isCreated: json['isCreated'] as bool? ?? false,
           );
           qrCodes.add(qrCode);
         } catch (e, stackTrace) {
@@ -107,6 +109,48 @@ class ScanResultLocalDataSource {
       _talker.info('All QR codes cleared successfully');
     } catch (e, stackTrace) {
       _talker.error('Error clearing QR codes', e, stackTrace);
+      rethrow;
+    }
+  }
+
+  Future<void> updateQrCode(QrCodeData qrCodeData) async {
+    try {
+      _talker.info('Updating QR code in local storage');
+      final prefs = await SharedPreferences.getInstance();
+      final savedCodes = prefs.getStringList(_keyQrCodes) ?? [];
+      
+      final qrCodeJson = {
+        'rawData': qrCodeData.rawData,
+        'type': qrCodeData.type.name,
+        'scannedAt': qrCodeData.scannedAt.toIso8601String(),
+        'title': qrCodeData.title,
+        'url': qrCodeData.url,
+        'isCreated': qrCodeData.isCreated,
+      };
+
+      // Find and update the QR code with matching rawData and isCreated flag
+      final index = savedCodes.indexWhere((codeJson) {
+        try {
+          final json = jsonDecode(codeJson) as Map<String, dynamic>;
+          return json['rawData'] as String == qrCodeData.rawData &&
+                 (json['isCreated'] as bool? ?? false) == qrCodeData.isCreated;
+        } catch (_) {
+          return false;
+        }
+      });
+
+      if (index != -1) {
+        savedCodes[index] = jsonEncode(qrCodeJson);
+        await prefs.setStringList(_keyQrCodes, savedCodes);
+        _talker.info('QR code updated successfully');
+      } else {
+        // If not found, just save as new
+        savedCodes.add(jsonEncode(qrCodeJson));
+        await prefs.setStringList(_keyQrCodes, savedCodes);
+        _talker.info('QR code not found, saved as new');
+      }
+    } catch (e, stackTrace) {
+      _talker.error('Error updating QR code', e, stackTrace);
       rethrow;
     }
   }

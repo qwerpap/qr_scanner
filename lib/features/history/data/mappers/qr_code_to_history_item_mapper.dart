@@ -11,8 +11,8 @@ class QrCodeToHistoryItemMapper {
     final id = _generateId(qrCodeData);
     final title = _getTitle(qrCodeData);
     final content = _getContent(qrCodeData);
-    final type = 'scanned';
-    final status = 'Scanned';
+    final type = qrCodeData.isCreated ? 'created' : 'scanned';
+    final status = qrCodeData.isCreated ? 'Created' : 'Scanned';
     final timestamp = _formatTime(qrCodeData.scannedAt);
     final iconData = _getIcon(qrCodeData.type).codePoint;
     final iconColor = _getColor(qrCodeData.type).value;

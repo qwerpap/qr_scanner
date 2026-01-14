@@ -3,7 +3,7 @@ import '../../data/constants/bottom_navigation_constants.dart';
 class NavigationUtils {
   NavigationUtils._();
 
-  static int getCurrentIndex(String currentLocation) {
+  static int? getCurrentIndex(String currentLocation) {
     // Normalize path: remove trailing slash and ensure leading slash
     final normalizedPath = currentLocation.trim();
     
@@ -13,7 +13,8 @@ class NavigationUtils {
         return i;
       }
     }
-    return 0;
+    // Return null if route is not a main navigation tab (e.g., nested screens)
+    return null;
   }
 }
 

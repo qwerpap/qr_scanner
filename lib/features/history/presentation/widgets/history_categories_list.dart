@@ -19,7 +19,17 @@ class HistoryCategoriesList extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: 60,
-      color: AppColors.whiteColor,
+      decoration: BoxDecoration(
+        color: AppColors.whiteColor,
+        boxShadow: [
+          BoxShadow(
+            color: const Color.fromRGBO(0, 0, 0, 0.06),
+            offset: const Offset(0, 4),
+            blurRadius: 16,
+            spreadRadius: 0,
+          ),
+        ],
+      ),
       child: ListView.separated(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         scrollDirection: Axis.horizontal,

@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/shared/widgets/custom_dialog.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_sliver_app_bar.dart';
 import 'package:qr_scanner/features/history/data/constants/history_categories_data.dart';
 import 'package:qr_scanner/features/history/presentation/bloc/history_bloc.dart';
@@ -51,24 +52,32 @@ class HistoryScreen extends StatelessWidget {
                 CustomSliverAppBar(
                   title: 'History',
                   showDivider: false,
+                  showShadow: false,
                   automaticallyImplyLeading: false,
                   actions: [
                     Center(
-                      child: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.scaffoldBgColor,
-                        ),
-                        child: Center(
-                          child: SvgPicture.asset(
-                            ImageSource.historyAppbar,
-                            width: 15,
-                            height: 15,
-                            colorFilter: const ColorFilter.mode(
-                              AppColors.greyTextColor,
-                              BlendMode.srcIn,
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          onTap: () => _showClearHistoryDialog(context),
+                          borderRadius: BorderRadius.circular(20),
+                          child: Container(
+                            width: 40,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.scaffoldBgColor,
+                            ),
+                            child: Center(
+                              child: SvgPicture.asset(
+                                ImageSource.historyAppbar,
+                                width: 15,
+                                height: 15,
+                                colorFilter: const ColorFilter.mode(
+                                  AppColors.greyTextColor,
+                                  BlendMode.srcIn,
+                                ),
+                              ),
                             ),
                           ),
                         ),
@@ -99,39 +108,56 @@ class HistoryScreen extends StatelessWidget {
                     ),
                   )
                 else
-                  SliverList(
-                    delegate: SliverChildBuilderDelegate((context, groupIndex) {
-                      final group = state.groups[groupIndex];
-                      return Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          HistoryDateHeader(date: group.date),
-                          ...group.items.map(
-                            (item) => Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 24,
-                                vertical: 8,
-                              ),
-                              child: HistoryCard(
-                                item: item,
-                                onTap: () {
-                                  context.push(
-                                    '/scan_result',
-                                    extra: {'qrData': item.qrData},
-                                  );
-                                },
+                  SliverPadding(
+                    padding: const EdgeInsets.only(bottom: 160),
+                    sliver: SliverList(
+                      delegate: SliverChildBuilderDelegate((context, groupIndex) {
+                        final group = state.groups[groupIndex];
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            HistoryDateHeader(date: group.date),
+                            ...group.items.map(
+                              (item) => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 24,
+                                  vertical: 8,
+                                ),
+                                child: HistoryCard(
+                                  item: item,
+                                  onTap: () {
+                                    context.push(
+                                      '/scan_result',
+                                      extra: {'qrData': item.qrData},
+                                    );
+                                  },
+                                ),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    }, childCount: state.groups.length),
+                          ],
+                        );
+                      }, childCount: state.groups.length),
+                    ),
                   ),
               ],
             );
           },
         ),
       ),
+    );
+  }
+
+  void _showClearHistoryDialog(BuildContext context) {
+    CustomDialog.show(
+      context: context,
+      title: 'Clear History',
+      message: 'Are you sure you want to clear all history? This action cannot be undone.',
+      confirmText: 'Clear',
+      cancelText: 'Cancel',
+      isDestructive: true,
+      onConfirm: () {
+        context.read<HistoryBloc>().add(const HistoryCleared());
+      },
     );
   }
 }
