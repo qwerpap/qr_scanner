@@ -4,6 +4,7 @@ import 'package:qr_scanner/core/core.dart';
 import 'package:qr_scanner/core/services/user_preferences_service.dart';
 import 'package:qr_scanner/core/theme/app_colors.dart';
 import 'package:qr_scanner/core/theme/app_fonts.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 class WelcomeText extends StatefulWidget {
   const WelcomeText({super.key});
@@ -41,14 +42,14 @@ class _WelcomeTextState extends State<WelcomeText> {
     }
   }
 
-  String get _welcomeText {
+  String _welcomeText(BuildContext context) {
     if (_isLoading) {
-      return 'Welcome!';
+      return context.l10n.welcome;
     }
     if (_userName != null && _userName!.isNotEmpty) {
-      return 'Welcome, $_userName!';
+      return context.l10n.welcomeWithName(_userName!);
     }
-    return 'Welcome!';
+    return context.l10n.welcome;
   }
 
   String get _initial {
@@ -68,7 +69,7 @@ class _WelcomeTextState extends State<WelcomeText> {
           children: [
             Expanded(
               child: Text(
-                _welcomeText,
+                _welcomeText(context),
                 style: AppFonts.displayLarge.copyWith(fontSize: 28),
               ),
             ),
@@ -94,6 +95,7 @@ class _WelcomeTextState extends State<WelcomeText> {
                       style: AppFonts.titleMedium.copyWith(
                         color: AppColors.whiteColor,
                         fontWeight: FontWeight.w700,
+                        height: 1.1
                       ),
                     ),
                   ),
@@ -104,7 +106,7 @@ class _WelcomeTextState extends State<WelcomeText> {
         ),
         const SizedBox(height: 4),
         Text(
-          'Manage your QR codes easily',
+          context.l10n.manageYourQrCodesEasily,
           style: AppFonts.titleLarge.copyWith(
             fontSize: 15,
             fontWeight: FontWeight.w400,

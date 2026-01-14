@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:apphud/apphud.dart';
+import 'package:flutter/foundation.dart';
 import 'package:apphud/listener/apphud_listener.dart';
 import 'package:apphud/models/apphud_models/apphud_error.dart';
 import 'package:apphud/models/apphud_models/apphud_paywalls.dart';
@@ -214,14 +217,111 @@ class AppHudServiceImpl implements AppHudService {
         return SubscriptionStatus.active;
       }
       
+      // Проверяем через hasActiveSubscription (быстрая проверка)
       final hasActiveSubscription = await Apphud.hasActiveSubscription();
+      
+      // Если подписка активна, дополнительно проверяем grace period, trial, intro
+      if (hasActiveSubscription) {
+        try {
+          // Получаем детальную информацию о подписках для проверки grace period
+          final subscriptions = await Apphud.subscriptions();
+          
+          bool isInGracePeriod = false;
+          bool isTrial = false;
+          bool isIntro = false;
+          
+          for (final sub in subscriptions) {
+            // Проверяем активность подписки
+            // В AppHud SDK isActive() - это метод, но нужно использовать правильно
+            bool isSubActive = false;
+            try {
+              // Используем динамический доступ для безопасности
+              final dynamic subscription = sub;
+              // Пробуем вызвать как метод
+              final result = subscription.isActive();
+              isSubActive = result == true || result == 1;
+            } catch (_) {
+              // Если не получилось, пропускаем эту подписку
+              continue;
+            }
+            
+            if (isSubActive) {
+              // Проверяем grace period, trial, intro через рефлексию или доступные методы
+              // AppHud SDK может иметь методы: isInGracePeriod(), isTrial(), isIntro()
+              // Или свойства: inGracePeriod, isTrial, isIntro
+              try {
+                // Пробуем получить через динамический доступ к свойствам
+                final dynamic subscription = sub;
+                final subString = subscription.toString().toLowerCase();
+                
+                // Проверяем grace period (если доступно)
+                // Пробуем разные варианты доступа к свойству
+                try {
+                  final gracePeriod = (subscription as dynamic).inGracePeriod;
+                  if (gracePeriod == true) {
+                    isInGracePeriod = true;
+                    _talker.debug('AppHud: Subscription is in grace period');
+                  }
+                } catch (_) {
+                  // Если свойство недоступно напрямую, проверяем через строку
+                  if (subString.contains('grace') && subString.contains('true')) {
+                    isInGracePeriod = true;
+                    _talker.debug('AppHud: Subscription is in grace period (detected via string)');
+                  }
+                }
+                
+                // Проверяем trial (если доступно)
+                try {
+                  final trial = (subscription as dynamic).isTrial ?? 
+                               (subscription as dynamic).isInTrial;
+                  if (trial == true) {
+                    isTrial = true;
+                    _talker.debug('AppHud: Subscription is in trial period');
+                  }
+                } catch (_) {
+                  if (subString.contains('trial') && subString.contains('true')) {
+                    isTrial = true;
+                    _talker.debug('AppHud: Subscription is in trial period (detected via string)');
+                  }
+                }
+                
+                // Проверяем intro offer (если доступно)
+                try {
+                  final intro = (subscription as dynamic).isIntro ?? 
+                               (subscription as dynamic).isIntroductoryOffer;
+                  if (intro == true) {
+                    isIntro = true;
+                    _talker.debug('AppHud: Subscription is in intro offer period');
+                  }
+                } catch (_) {
+                  if (subString.contains('intro') && subString.contains('true')) {
+                    isIntro = true;
+                    _talker.debug('AppHud: Subscription is in intro offer period (detected via string)');
+                  }
+                }
+              } catch (e) {
+                // Если методы недоступны, используем только isActive()
+                _talker.debug('AppHud: Grace period/trial/intro check not available: $e');
+              }
+            }
+          }
+          
+          // Если в grace period, trial или intro - считаем активной
+          if (isInGracePeriod || isTrial || isIntro) {
+            _talker.debug('AppHud: Subscription status is active (grace period/trial/intro)');
+            return SubscriptionStatus.active;
+          }
+        } catch (e) {
+          // Если не удалось получить детальную информацию, используем hasActiveSubscription
+          _talker.debug('AppHud: Failed to get detailed subscription info: $e');
+        }
+        
+        _talker.debug('AppHud: Subscription status is active');
+        return SubscriptionStatus.active;
+      }
 
-      final status = hasActiveSubscription
-          ? SubscriptionStatus.active
-          : SubscriptionStatus.inactive;
-
-      _talker.debug('AppHud: Subscription status is $status');
-      return status;
+      _talker.debug('AppHud: Subscription status is inactive');
+      return SubscriptionStatus.inactive;
     } catch (e, stackTrace) {
       _talker.error('AppHud: Failed to get subscription status', e, stackTrace);
       return SubscriptionStatus.unknown;
@@ -239,14 +339,34 @@ class AppHudServiceImpl implements AppHudService {
     try {
       _talker.debug('AppHud: Loading products for paywall $_paywallId');
 
-      // Загружаем все продукты и фильтруем по нужным ID
-      final allProducts = await Apphud.products();
-      _talker.debug('AppHud: Received ${allProducts.length} products from AppHud');
+      // Добавляем таймаут для загрузки продуктов (3 секунды)
+      // Если AppHud не инициализирован или нет интернета, вернем тестовые продукты
+      List<dynamic> allProducts = [];
+      try {
+        allProducts = await Apphud.products().timeout(
+          const Duration(seconds: 3),
+        );
+        _talker.debug('AppHud: Received ${allProducts.length} products from AppHud');
+      } on TimeoutException {
+        _talker.warning('AppHud: Timeout loading products (3s), using test products');
+        allProducts = [];
+      } catch (e) {
+        _talker.warning('AppHud: Error loading products: $e, using test products');
+        allProducts = [];
+      }
 
       if (allProducts.isEmpty) {
         _talker.warning('AppHud: No products found. Products may not be loaded yet.');
-        // Возвращаем пустой список, но не ошибку
-        return [];
+        // В PRODUCTION не возвращаем тестовые продукты, только в DEBUG
+        if (kDebugMode) {
+          _hasRealProducts = false;
+          final testProducts = _getTestProducts();
+          _talker.debug('AppHud: Returning ${testProducts.length} test products (DEBUG MODE)');
+          return testProducts;
+        } else {
+          // В production возвращаем пустой список или бросаем исключение
+          throw Exception('Products are not available. Please check your internet connection.');
+        }
       }
 
       // Фильтруем продукты по известным ID из paywall
@@ -302,20 +422,32 @@ class AppHudServiceImpl implements AppHudService {
 
       _talker.debug('AppHud: Loaded ${products.length} products from paywall');
       
-      // Если продукты не загрузились, возвращаем тестовые для разработки
+      // Если продукты не загрузились, возвращаем тестовые только в DEBUG
       if (products.isEmpty) {
-        _talker.warning('AppHud: No products loaded, using test products');
-        _hasRealProducts = false;
-        return _getTestProducts();
+        _talker.warning('AppHud: No products loaded');
+        if (kDebugMode) {
+          _hasRealProducts = false;
+          final testProducts = _getTestProducts();
+          _talker.debug('AppHud: Returning ${testProducts.length} test products (DEBUG MODE)');
+          return testProducts;
+        } else {
+          throw Exception('Products are not available. Please check your internet connection.');
+        }
       }
       
       _hasRealProducts = true;
       return products;
     } catch (e, stackTrace) {
       _talker.error('AppHud: Failed to get paywall products', e, stackTrace);
-      // В случае ошибки возвращаем тестовые продукты
-      _hasRealProducts = false;
-      return _getTestProducts();
+      // В случае ошибки возвращаем тестовые продукты только в DEBUG
+      if (kDebugMode) {
+        _hasRealProducts = false;
+        final testProducts = _getTestProducts();
+        _talker.debug('AppHud: Returning ${testProducts.length} test products due to error (DEBUG MODE)');
+        return testProducts;
+      } else {
+        rethrow;
+      }
     }
   }
 
@@ -521,11 +653,26 @@ class AppHudServiceImpl implements AppHudService {
     try {
       _talker.debug('AppHud: Starting restore purchases');
 
-      final result = await Apphud.restorePurchases();
+      // Добавляем таймаут для restore (30 секунд)
+      final result = await Apphud.restorePurchases().timeout(
+        const Duration(seconds: 30),
+        onTimeout: () {
+          throw TimeoutException('Restore timeout: no internet connection');
+        },
+      );
 
       if (result.error != null) {
         final error = result.error!;
         _talker.error('AppHud: Restore failed: ${error.message}', error);
+        
+        // Специфичная обработка ошибок сети
+        final errorMessage = error.message?.toLowerCase() ?? '';
+        if (errorMessage.contains('network') ||
+            errorMessage.contains('connection') ||
+            errorMessage.contains('timeout')) {
+          throw Exception('No internet connection. Please check your network and try again.');
+        }
+        
         throw Exception('Restore failed: ${error.message}');
       }
 
@@ -534,6 +681,9 @@ class AppHudServiceImpl implements AppHudService {
       // Уведомляем об изменении статуса подписки
       final newStatus = await getSubscriptionStatus();
       notifySubscriptionChanged(newStatus);
+    } on TimeoutException catch (e) {
+      _talker.error('AppHud: Restore timeout', e);
+      throw Exception('Restore timeout. Please check your internet connection.');
     } catch (e, stackTrace) {
       _talker.error('AppHud: Restore error', e, stackTrace);
       rethrow;

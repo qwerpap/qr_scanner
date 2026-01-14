@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 class SuccessHeader extends StatelessWidget {
   const SuccessHeader({super.key});
@@ -17,7 +18,7 @@ class SuccessHeader extends StatelessWidget {
         ),
         Center(
           child: Text(
-            'The QR code is ready',
+            context.l10n.theQrCodeIsReady,
             style: AppFonts.titleLarge,
           ),
         ),

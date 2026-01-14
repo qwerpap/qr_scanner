@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/core/shared/widgets/base_container.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_app_bar.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_divider.dart';
@@ -33,7 +34,7 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
       create: (context) =>
           getIt<ScanResultBloc>()..add(ScanResultInitialized(widget.qrData)),
       child: Scaffold(
-        appBar: CustomAppBar(title: 'Scan Result', showCloseButton: true),
+        appBar: CustomAppBar(title: context.l10n.scanResult, showCloseButton: true),
         body: BlocBuilder<ScanResultBloc, ScanResultState>(
           builder: (context, state) {
               if (state.isLoading) {
@@ -45,11 +46,11 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Error: ${state.errorMessage}'),
+                      Text('${context.l10n.error}: ${state.errorMessage}'),
                       const SizedBox(height: 16),
                       ElevatedButton(
                         onPressed: () => context.pop(),
-                        child: const Text('Go Back'),
+                        child: Text(context.l10n.goBack),
                       ),
                     ],
                   ),
@@ -58,11 +59,12 @@ class _ScanResultScreenState extends State<ScanResultScreen> {
 
               final qrCodeData = state.qrCodeData;
               if (qrCodeData == null) {
-                return const Center(child: Text('No QR code data'));
+                return Center(child: Text(context.l10n.noQrCodeData));
               }
 
               final scannedTime = TimeFormatter.formatScannedTime(
                 qrCodeData.scannedAt,
+                context.l10n,
               );
 
               return ListView(

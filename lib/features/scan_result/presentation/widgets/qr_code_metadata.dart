@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/features/scan_result/presentation/widgets/result_column_text.dart';
 
 class QrCodeMetadata extends StatelessWidget {
@@ -16,8 +17,8 @@ class QrCodeMetadata extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        ResultColumnText(title: 'Scanned', subtitle: scannedTime),
-        ResultColumnText(title: 'Type', subtitle: type),
+        ResultColumnText(title: context.l10n.scanned, subtitle: scannedTime),
+        ResultColumnText(title: context.l10n.type, subtitle: type),
       ],
     );
   }

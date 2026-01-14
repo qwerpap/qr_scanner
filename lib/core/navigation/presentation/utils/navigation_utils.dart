@@ -1,4 +1,4 @@
-import '../../data/constants/bottom_navigation_constants.dart';
+import '../../data/constants/navigation_constants.dart';
 
 class NavigationUtils {
   NavigationUtils._();
@@ -7,9 +7,16 @@ class NavigationUtils {
     // Normalize path: remove trailing slash and ensure leading slash
     final normalizedPath = currentLocation.trim();
     
-    for (int i = 0; i < BottomNavigationConstants.navigationItems.length; i++) {
-      final route = BottomNavigationConstants.navigationItems[i].route;
-      if (route == normalizedPath) {
+    // Define routes in order (matching the navigation items order)
+    final routes = [
+      NavigationConstants.home,
+      NavigationConstants.scanQr,
+      NavigationConstants.myQrCodes,
+      NavigationConstants.history,
+    ];
+    
+    for (int i = 0; i < routes.length; i++) {
+      if (routes[i] == normalizedPath) {
         return i;
       }
     }

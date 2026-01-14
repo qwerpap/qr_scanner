@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_sliver_app_bar.dart';
 import 'package:qr_scanner/features/my_qr_codes/domain/models/created_qr_code_model.dart';
 import 'package:qr_scanner/features/my_qr_codes/presentation/bloc/my_qr_codes_bloc.dart';
@@ -44,11 +45,11 @@ class QrCodeViewScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('No QR code data'),
+              Text(context.l10n.noQrCodeData),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () => context.pop(),
-                child: const Text('Go Back'),
+                child: Text(context.l10n.goBack),
               ),
             ],
           ),
@@ -59,8 +60,8 @@ class QrCodeViewScreen extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const CustomSliverAppBar(
-            title: 'QR Code',
+          CustomSliverAppBar(
+            title: context.l10n.scanQrCode,
             showCloseButton: true,
             showDivider: false,
           ),

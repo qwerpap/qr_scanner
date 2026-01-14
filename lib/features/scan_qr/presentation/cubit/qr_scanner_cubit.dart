@@ -101,7 +101,6 @@ class QrScannerCubit extends Cubit<QrScannerState> {
 
     try {
       _talker.info('Initializing mobile scanner');
-      debugPrint('Initializing MobileScannerController with autoStart: true');
       final controller = MobileScannerController(
         detectionSpeed: DetectionSpeed.noDuplicates,
         facing: state.currentFacing,
@@ -110,7 +109,6 @@ class QrScannerCubit extends Cubit<QrScannerState> {
       );
       emit(state.copyWith(controller: controller, isInitializing: false));
       _talker.info('MobileScannerController initialized successfully');
-      debugPrint('MobileScannerController initialized and should be running');
     } catch (e, stackTrace) {
       _talker.error('Error initializing scanner', e, stackTrace);
       emit(state.copyWith(isInitializing: false, errorMessage: e.toString()));
@@ -136,7 +134,6 @@ class QrScannerCubit extends Cubit<QrScannerState> {
     final barcode = capture.barcodes.first;
     if (barcode.rawValue != null && barcode.rawValue!.isNotEmpty) {
       _talker.info('QR code detected: ${barcode.rawValue}');
-      debugPrint('QR Code scanned: ${barcode.rawValue}');
       emit(state.copyWith(
         detectedQrData: barcode.rawValue,
         isProcessingQr: true,
@@ -181,17 +178,55 @@ class QrScannerCubit extends Cubit<QrScannerState> {
 
     try {
       emit(state.copyWith(isPickingImage: true));
+      
+      // Сначала пытаемся открыть image_picker напрямую
+      // На iOS симуляторе и некоторых устройствах это может работать без явного запроса разрешения
+      _talker.info('Opening gallery picker');
+      XFile? image;
+      
+      try {
+        image = await _imagePicker.pickImage(
+          source: ImageSource.gallery,
+        );
+      } catch (pickerError) {
+        _talker.warning('Image picker error: $pickerError');
+        // Если image_picker выдал ошибку, запрашиваем разрешение явно
+        if (Platform.isIOS) {
+          _talker.info('Requesting photo library permission explicitly');
       final status = await Permission.photos.request();
-      if (!status.isGranted) {
+          _talker.info('Photo library permission status: $status');
+          
+          if (status.isGranted || status.isLimited) {
+            _talker.info('Retrying gallery picker after permission granted');
+            image = await _imagePicker.pickImage(
+              source: ImageSource.gallery,
+            );
+          } else if (status.isPermanentlyDenied) {
+            emit(state.copyWith(isPickingImage: false));
+            _talker.warning('Photo library permission permanently denied');
+            // Пользователь может открыть настройки через системный диалог
+            return;
+          } else {
         emit(state.copyWith(isPickingImage: false));
         _talker.warning('Photo library permission denied');
         return;
       }
-
-      _talker.info('Picking image from gallery');
-      final XFile? image = await _imagePicker.pickImage(
+        } else {
+          // Android - запрашиваем разрешение
+          _talker.info('Requesting storage permission for Android');
+          final status = await Permission.storage.request();
+          if (status.isGranted) {
+            _talker.info('Retrying gallery picker after permission granted');
+            image = await _imagePicker.pickImage(
         source: ImageSource.gallery,
       );
+          } else {
+            emit(state.copyWith(isPickingImage: false));
+            _talker.warning('Storage permission denied');
+            return;
+          }
+        }
+      }
 
       if (image == null) {
         emit(state.copyWith(isPickingImage: false));
@@ -200,6 +235,20 @@ class QrScannerCubit extends Cubit<QrScannerState> {
       }
 
       _talker.info('Image selected: ${image.path}');
+      
+      // Проверяем симулятор перед сканированием
+      if (Platform.isIOS) {
+        final isSimulator = await _isIOSSimulatorInternal();
+        if (isSimulator) {
+          emit(state.copyWith(isPickingImage: false));
+          _talker.warning('Image scanning is not supported on iOS Simulator');
+          _sideEffectController.emit(
+            const ShowNotificationSideEffect(NotificationType.simulatorNotSupported),
+          );
+          return;
+        }
+      }
+      
       await _scanImageFromFile(image.path);
       emit(state.copyWith(isPickingImage: false));
     } catch (e, stackTrace) {
@@ -212,6 +261,18 @@ class QrScannerCubit extends Cubit<QrScannerState> {
   }
 
   Future<void> _scanImageFromFile(String imagePath) async {
+    // Проверяем, что это iOS симулятор (проверяем напрямую, так как state может быть не актуален)
+    if (Platform.isIOS) {
+      final isSimulator = await _isIOSSimulatorInternal();
+      if (isSimulator) {
+        _talker.warning('Image scanning is not supported on iOS Simulator');
+        _sideEffectController.emit(
+          const ShowNotificationSideEffect(NotificationType.simulatorNotSupported),
+        );
+        return;
+      }
+    }
+
     MobileScannerController? controller = state.controller;
     MobileScannerController? tempController;
     try {
@@ -242,7 +303,22 @@ class QrScannerCubit extends Cubit<QrScannerState> {
       }
     } catch (e, stackTrace) {
       _talker.error('Error scanning image', e, stackTrace);
+      
+      // Обрабатываем специфичную ошибку iOS симулятора
+      final errorMessage = e.toString().toLowerCase();
+      if (errorMessage.contains('simulator') || 
+          errorMessage.contains('not supported') ||
+          errorMessage.contains('unsupported operation')) {
+        _talker.warning('Image scanning is not supported on iOS Simulator');
+        _sideEffectController.emit(
+          const ShowNotificationSideEffect(NotificationType.simulatorNotSupported),
+        );
+      } else {
       emit(state.copyWith(errorMessage: e.toString()));
+        _sideEffectController.emit(
+          const ShowNotificationSideEffect(NotificationType.noQrFound),
+        );
+      }
     } finally {
       if (tempController != null) {
         try {

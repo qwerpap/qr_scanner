@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/core/subscription/subscription_product.dart';
 import 'package:qr_scanner/features/paywall/data/mappers/subscription_product_to_plan_mapper.dart';
 import 'package:qr_scanner/features/paywall/presentation/bloc/paywall_bloc.dart';
@@ -39,15 +40,15 @@ class _PaywallScreenState extends State<PaywallScreen> {
             if (state is PaywallPurchaseSuccess) {
               context.pop();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Subscription purchased successfully!'),
+                SnackBar(
+                  content: Text(context.l10n.subscriptionPurchasedSuccessfully),
                   backgroundColor: Colors.green,
                 ),
               );
             } else if (state is PaywallRestoreSuccess) {
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Purchases restored successfully!'),
+                SnackBar(
+                  content: Text(context.l10n.purchasesRestoredSuccessfully),
                   backgroundColor: Colors.green,
                 ),
               );
@@ -78,48 +79,49 @@ class _PaywallScreenState extends State<PaywallScreen> {
 
               final plans = SubscriptionProductToPlanMapper.mapList(
                 state.products,
+                context,
               );
 
               return CustomScrollView(
-                slivers: [
-                  SliverToBoxAdapter(child: const PaywallGradientSection()),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverList(
+          slivers: [
+            SliverToBoxAdapter(child: const PaywallGradientSection()),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              sliver: SliverList(
                       delegate: SliverChildListDelegate([
                         const SizedBox(height: 30),
                       ]),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: const PaywallFeaturesList(),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverList(
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              sliver: const PaywallFeaturesList(),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              sliver: SliverList(
                       delegate: SliverChildListDelegate([
                         const SizedBox(height: 32),
                       ]),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: PaywallPlansList(
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              sliver: PaywallPlansList(
                       plans: plans,
                       selectedPlanId: _selectedPlanId ?? '',
-                      onPlanTap: (planId) {
-                        setState(() {
-                          _selectedPlanId = planId;
+                onPlanTap: (planId) {
+                  setState(() {
+                    _selectedPlanId = planId;
                           _selectedProduct = state.products.firstWhere(
                             (p) => p.id == planId,
                           );
-                        });
-                      },
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                  });
+                },
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
                     sliver: SliverToBoxAdapter(
                       child: PaywallFooter(
                         isLoading:
@@ -161,9 +163,9 @@ class _PaywallScreenState extends State<PaywallScreen> {
                           const PaywallLoadProducts(),
                         );
                       },
-                      child: const Text('Retry'),
-                    ),
-                  ],
+                      child: Text(context.l10n.retryButton),
+            ),
+          ],
                 ),
               );
             }

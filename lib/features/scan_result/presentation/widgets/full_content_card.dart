@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 class FullContentCard extends StatelessWidget {
   const FullContentCard({
@@ -25,7 +26,7 @@ class FullContentCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text('Full Content', style: AppFonts.titleMedium),
+                Text(context.l10n.fullContent, style: AppFonts.titleMedium),
                 const SizedBox(height: 8),
                 Text(
                   content,

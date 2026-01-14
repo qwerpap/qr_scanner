@@ -34,7 +34,7 @@ class NotificationService {
               left: 24,
               right: 24,
               child: CustomNotification(
-                message: type.message,
+                message: type.message(context),
                 icon: type.icon,
                 duration: duration,
                 onDismiss: () {

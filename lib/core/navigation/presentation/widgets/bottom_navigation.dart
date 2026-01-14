@@ -51,14 +51,14 @@ class CustomBottomNavigation extends StatelessWidget {
                   children: [
                     _buildNavigationItem(
                       context: context,
-                      item: BottomNavigationConstants.navigationItems[0],
+                      item: BottomNavigationConstants.getNavigationItems(context)[0],
                       index: 0,
                       currentIndex: state.currentIndex,
                       cubit: cubit,
                     ),
                     _buildNavigationItem(
                       context: context,
-                      item: BottomNavigationConstants.navigationItems[1],
+                      item: BottomNavigationConstants.getNavigationItems(context)[1],
                       index: 1,
                       currentIndex: state.currentIndex,
                       cubit: cubit,
@@ -66,14 +66,14 @@ class CustomBottomNavigation extends StatelessWidget {
                     const SizedBox(width: _fabWidth),
                     _buildNavigationItem(
                       context: context,
-                      item: BottomNavigationConstants.navigationItems[2],
+                      item: BottomNavigationConstants.getNavigationItems(context)[2],
                       index: 2,
                       currentIndex: state.currentIndex,
                       cubit: cubit,
                     ),
                     _buildNavigationItem(
                       context: context,
-                      item: BottomNavigationConstants.navigationItems[3],
+                      item: BottomNavigationConstants.getNavigationItems(context)[3],
                       index: 3,
                       currentIndex: state.currentIndex,
                       cubit: cubit,
@@ -128,14 +128,17 @@ class CustomBottomNavigation extends StatelessWidget {
                   child: _buildIcon(item, iconColor),
                 ),
                 const SizedBox(height: _iconTextSpacing),
-                AnimatedDefaultTextStyle(
-                  duration: _animationDuration,
-                  curve: _animationCurve,
-                  style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                        color: textColor,
-                      ) ??
-                      TextStyle(color: textColor),
-                  child: Text(item.label),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: AnimatedDefaultTextStyle(
+                    duration: _animationDuration,
+                    curve: _animationCurve,
+                    style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                          color: textColor,
+                        ) ??
+                        TextStyle(color: textColor),
+                    child: Text(item.label),
+                  ),
                 ),
               ],
             ),

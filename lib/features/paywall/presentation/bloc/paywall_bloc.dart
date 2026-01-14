@@ -2,6 +2,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../../core/services/attribution/appsflyer_service.dart';
 import '../../../../core/subscription/subscription_product.dart';
+import '../../../../core/subscription/subscription_status.dart';
 import '../../domain/usecases/get_paywall_products_usecase.dart';
 import '../../domain/usecases/purchase_subscription_usecase.dart';
 import '../../domain/usecases/restore_subscriptions_usecase.dart';
@@ -16,7 +17,7 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
   final CheckSubscriptionStatusUseCase _checkSubscriptionStatusUseCase;
   final AppsFlyerService _appsFlyerService;
   final Talker _talker;
-  
+
   // Сохраняем последний список продуктов для восстановления состояния после ошибки
   List<SubscriptionProduct> _lastProducts = [];
 
@@ -27,13 +28,13 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
     required CheckSubscriptionStatusUseCase checkSubscriptionStatusUseCase,
     required AppsFlyerService appsFlyerService,
     required Talker talker,
-  })  : _getPaywallProductsUseCase = getPaywallProductsUseCase,
-        _purchaseSubscriptionUseCase = purchaseSubscriptionUseCase,
-        _restoreSubscriptionsUseCase = restoreSubscriptionsUseCase,
-        _checkSubscriptionStatusUseCase = checkSubscriptionStatusUseCase,
-        _appsFlyerService = appsFlyerService,
-        _talker = talker,
-        super(const PaywallInitial()) {
+  }) : _getPaywallProductsUseCase = getPaywallProductsUseCase,
+       _purchaseSubscriptionUseCase = purchaseSubscriptionUseCase,
+       _restoreSubscriptionsUseCase = restoreSubscriptionsUseCase,
+       _checkSubscriptionStatusUseCase = checkSubscriptionStatusUseCase,
+       _appsFlyerService = appsFlyerService,
+       _talker = talker,
+       super(const PaywallInitial()) {
     on<PaywallLoadProducts>(_onLoadProducts);
     on<PaywallPurchase>(_onPurchase);
     on<PaywallRestore>(_onRestore);
@@ -45,24 +46,68 @@ class PaywallBloc extends Bloc<PaywallEvent, PaywallState> {
   ) async {
     emit(const PaywallLoading());
     try {
-      final status = await _checkSubscriptionStatusUseCase();
-      await _appsFlyerService.logEvent('open_paywall', {
-        'source_screen': 'paywall',
-        'is_premium': status.toString().split('.').last == 'active',
-      });
+      // Проверяем статус подписки (может не работать если AppHud не инициализирован)
+      SubscriptionStatus? status;
+      try {
+        status = await _checkSubscriptionStatusUseCase();
+      } catch (e) {
+        _talker.warning('PaywallBloc: Failed to check subscription status: $e');
+        status = null;
+      }
 
+      // Логируем событие (не критично, если AppsFlyer не инициализирован)
+      try {
+        await _appsFlyerService.logEvent('open_paywall', {
+          'source_screen': 'paywall',
+          'is_premium': status != null && status.toString().split('.').last == 'active',
+        });
+      } catch (e) {
+        _talker.warning('PaywallBloc: Failed to log event: $e');
+      }
+
+      // Загружаем продукты (должны вернуться тестовые, если AppHud не инициализирован)
       final products = await _getPaywallProductsUseCase();
       _lastProducts = products;
       _talker.debug('PaywallBloc: Loaded ${products.length} products');
+      
+      // Если продукты пустые, это ошибка - должны быть хотя бы тестовые
       if (products.isEmpty) {
         _talker.warning(
           'PaywallBloc: No products found. Check AppHud configuration.',
         );
+        emit(PaywallError(
+          'No products available. Please check your internet connection and try again.',
+        ));
+        return;
       }
+      
       emit(PaywallLoaded(products));
     } catch (e, stackTrace) {
       _talker.error('Failed to load paywall products', e, stackTrace);
-      emit(PaywallError('Failed to load products: ${e.toString()}'));
+      
+      // Улучшенная обработка ошибок
+      String errorMessage;
+      final errorString = e.toString().toLowerCase();
+      
+      if (errorString.contains('network') ||
+          errorString.contains('connection') ||
+          errorString.contains('timeout') ||
+          errorString.contains('socket')) {
+        errorMessage = 'No internet connection. Please check your network and try again.';
+      } else if (errorString.contains('products not available') ||
+                 errorString.contains('products are not configured')) {
+        errorMessage = 'Products are temporarily unavailable. Please try again later.';
+      } else {
+        errorMessage = 'Failed to load products. Please check your internet connection and try again.';
+      }
+      
+      // Если есть сохраненные продукты, показываем их вместо ошибки
+      if (_lastProducts.isNotEmpty) {
+        _talker.info('PaywallBloc: Using cached products due to error');
+        emit(PaywallLoaded(_lastProducts));
+      } else {
+        emit(PaywallError(errorMessage));
+      }
     }
   }
 

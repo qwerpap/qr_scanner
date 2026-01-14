@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
+import '../../../../core/theme/app_colors.dart';
 import '../../../my_qr_codes/domain/models/created_qr_code_model.dart';
 
 class CreateQrCodeState extends Equatable {
@@ -23,7 +24,7 @@ class CreateQrCodeState extends Equatable {
     this.textData = '',
     this.wifiData = '',
     this.contactData = '',
-    this.selectedColor = const Color.fromRGBO(122, 203, 255, 1),
+    this.selectedColor = AppColors.primaryColor,
     this.hasLogo = false,
     this.logoPath,
     this.generatedQrCode,

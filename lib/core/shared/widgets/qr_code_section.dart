@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:qr_scanner/core/shared/widgets/custom_elevated_button.dart';
 import 'package:qr_scanner/core/theme/app_colors.dart';
+import 'package:qr_scanner/core/theme/app_fonts.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/features/scan_qr/presentation/cubit/qr_scanner_cubit.dart';
 import 'package:qr_scanner/features/scan_qr/presentation/cubit/qr_scanner_state.dart';
 
@@ -42,7 +45,9 @@ class _QrCodeSectionState extends State<QrCodeSection>
       if (!mounted) return;
       final cubit = context.read<QrScannerCubit>();
       final state = cubit.state;
-      if (widget.hasPermission && !state.isIOSSimulator && state.controller == null) {
+      if (widget.hasPermission &&
+          !state.isIOSSimulator &&
+          state.controller == null) {
         cubit.initializeScanner(widget.hasPermission);
       }
     });
@@ -74,7 +79,6 @@ class _QrCodeSectionState extends State<QrCodeSection>
     return BlocListener<QrScannerCubit, QrScannerState>(
       listener: (context, state) {
         if (state.detectedQrData != null) {
-          debugPrint('QR Code detected: ${state.detectedQrData}');
           context.read<QrScannerCubit>().clearDetectedQrData();
           context.go('/scan_result', extra: {'qrData': state.detectedQrData});
         }
@@ -127,7 +131,8 @@ class _QrCodeSectionState extends State<QrCodeSection>
                         AnimatedBuilder(
                           animation: _animation,
                           builder: (context, child) {
-                            final position = _animation.value * constraints.maxHeight;
+                            final position =
+                                _animation.value * constraints.maxHeight;
                             return Positioned(
                               top: position,
                               left: 0,
@@ -165,8 +170,10 @@ class _QrCodeSectionState extends State<QrCodeSection>
   Widget _buildPlaceholder(QrScannerState state) {
     final isPermanentlyDenied = state.isPermissionPermanentlyDenied;
     final isDenied = state.isPermissionDenied && !isPermanentlyDenied;
-    final showPermissionButton = !widget.hasPermission && 
-        !state.isIOSSimulator && 
+    final isIOSSimulator = state.isIOSSimulator;
+    final showPermissionButton =
+        !widget.hasPermission &&
+        !isIOSSimulator &&
         widget.onPermissionRequest != null &&
         (isDenied || isPermanentlyDenied);
 
@@ -185,55 +192,109 @@ class _QrCodeSectionState extends State<QrCodeSection>
           ),
         ],
       ),
-      child: Stack(
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return Stack(
         children: [
           Center(
+                child: SingleChildScrollView(
             child: Padding(
               padding: const EdgeInsets.all(24),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(
-                    Icons.qr_code_scanner,
-                    size: 64,
+                        // Красивая иконка для iOS симулятора
+                        Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            gradient: AppColors.primaryGradient,
+                          ),
+                          child: Icon(
+                            isIOSSimulator
+                                ? Icons.phone_iphone
+                                : Icons.qr_code_scanner,
+                            size: 40,
+                            color: AppColors.whiteColor,
+                          ),
+                        ),
+                        const SizedBox(height: 24),
+                      Text(
+                        _getPlaceholderTitle(context, state, isPermanentlyDenied),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: AppColors.blackColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _getPlaceholderText(context, state, isPermanentlyDenied),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
                     color: AppColors.greyTextColor,
+                          fontSize: 14,
+                        ),
                   ),
+                        if (isIOSSimulator) ...[
                   const SizedBox(height: 16),
-                  Text(
-                    _getPlaceholderText(state, isPermanentlyDenied),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.primaryColor.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Text(
+                              context.l10n.useGalleryButtonToScan,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      color: AppColors.greyTextColor,
-                      fontSize: 16,
+                              style: TextStyle(
+                                color: AppColors.primaryDarkColor,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
                     ),
                   ),
+                        ],
                   if (showPermissionButton) ...[
                     const SizedBox(height: 24),
-                    ElevatedButton.icon(
+                          CustomElevatedButton(
                       onPressed: isPermanentlyDenied
                           ? () async {
                               await openAppSettings();
                             }
                           : widget.onPermissionRequest,
-                      icon: Icon(
-                        isPermanentlyDenied ? Icons.settings : Icons.lock_open,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(
+                                  isPermanentlyDenied
+                                      ? Icons.settings
+                                      : Icons.lock_open,
+                                  size: 20,
+                                  color: AppColors.whiteColor,
                       ),
-                      label: Text(
+                                const SizedBox(width: 8),
+                              Text(
                         isPermanentlyDenied
-                            ? 'Open Settings'
-                            : 'Request Permission',
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
+                                    ? context.l10n.openSettings
+                                    : context.l10n.requestPermission,
+                                style: AppFonts.titleLarge.copyWith(
+                                  color: AppColors.whiteColor,
+                                ),
                         ),
+                              ],
                       ),
                     ),
                     if (isPermanentlyDenied) ...[
                       const SizedBox(height: 12),
-                      const Text(
-                        'Please enable camera permission\nin Settings',
+                          Text(
+                            context.l10n.pleaseEnableCameraPermission,
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: AppColors.greyTextColor,
@@ -246,9 +307,9 @@ class _QrCodeSectionState extends State<QrCodeSection>
               ),
             ),
           ),
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return AnimatedBuilder(
+              ),
+              // Анимированная линия сканирования
+              AnimatedBuilder(
                 animation: _animation,
                 builder: (context, child) {
                   final position = _animation.value * constraints.maxHeight;
@@ -273,30 +334,43 @@ class _QrCodeSectionState extends State<QrCodeSection>
                     ),
                   );
                 },
+              ),
+            ],
               );
             },
-          ),
-        ],
       ),
     );
   }
 
-  String _getPlaceholderText(QrScannerState state, bool isPermanentlyDenied) {
+  String _getPlaceholderTitle(BuildContext context, QrScannerState state, bool isPermanentlyDenied) {
     if (state.isIOSSimulator) {
-      return 'Camera not available\non iOS Simulator';
+      return context.l10n.cameraUnavailable;
     }
     if (isPermanentlyDenied) {
-      return 'Camera permission denied.\nPlease enable it in Settings.';
+      return context.l10n.cameraAccessDenied;
     }
     if (state.isPermissionDenied) {
-      return 'Camera permission required\nto scan QR codes';
+      return context.l10n.cameraPermissionRequired;
+    }
+    return context.l10n.initializingCameraTitle;
+  }
+
+  String _getPlaceholderText(BuildContext context, QrScannerState state, bool isPermanentlyDenied) {
+    if (state.isIOSSimulator) {
+      return context.l10n.cameraNotAvailableOnSimulator;
+    }
+    if (isPermanentlyDenied) {
+      return context.l10n.cameraPermissionDenied;
+    }
+    if (state.isPermissionDenied) {
+      return context.l10n.cameraPermissionRequiredToScan;
     }
     if (state.isInitializing) {
-      return 'Initializing camera...';
+      return context.l10n.initializingCamera;
     }
     if (!widget.hasPermission) {
-      return 'Camera permission required';
+      return context.l10n.cameraPermissionRequiredText;
     }
-    return 'Loading camera...';
+    return context.l10n.loadingCamera;
   }
 }

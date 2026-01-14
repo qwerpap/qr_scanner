@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 class QrReadyActionButtons extends StatelessWidget {
   const QrReadyActionButtons({
@@ -20,7 +21,7 @@ class QrReadyActionButtons extends StatelessWidget {
         Expanded(
           child: _ActionButton(
             icon: Icons.share,
-            label: 'Share',
+            label: context.l10n.share,
             onTap: onShareTap,
           ),
         ),
@@ -29,7 +30,7 @@ class QrReadyActionButtons extends StatelessWidget {
           Expanded(
             child: _ActionButton(
               icon: Icons.bookmark,
-              label: 'Save',
+              label: context.l10n.save,
               onTap: onSaveTap,
             ),
           ),

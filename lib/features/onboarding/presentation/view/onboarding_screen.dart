@@ -40,7 +40,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         },
         child: BlocBuilder<OnboardingCubit, cubit_state.OnboardingState>(
         builder: (context, state) {
-          final currentScreen = OnboardingData.screens[state.currentIndex];
+          final screens = OnboardingData.getScreens(context);
+          final currentScreen = screens[state.currentIndex];
 
           return Scaffold(
             body: OnboardingGradientBackground(
@@ -53,10 +54,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         onPageChanged: (index) {
                           context.read<OnboardingCubit>().changePage(index);
                         },
-                        itemCount: OnboardingData.screens.length,
+                        itemCount: screens.length,
                         itemBuilder: (context, index) {
                           return OnboardingPageContent(
-                            screen: OnboardingData.screens[index],
+                            screen: screens[index],
                           );
                         },
                       ),
@@ -64,10 +65,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     OnboardingBottomSection(
                       currentScreen: currentScreen,
                       currentIndex: state.currentIndex,
-                      totalScreens: OnboardingData.screens.length,
+                      totalScreens: screens.length,
                       onNextPressed: () {
                         final cubit = context.read<OnboardingCubit>();
-                        if (cubit.canGoNext()) {
+                        if (cubit.canGoNext(context)) {
                           _pageController.nextPage(
                             duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,

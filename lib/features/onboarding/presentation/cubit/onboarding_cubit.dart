@@ -14,12 +14,12 @@ class OnboardingCubit extends Cubit<OnboardingState> {
     }
   }
 
-  bool canGoNext() {
-    return state.currentIndex < OnboardingData.screens.length - 1;
+  bool canGoNext(BuildContext context) {
+    return state.currentIndex < OnboardingData.getScreens(context).length - 1;
   }
 
-  bool isLastPage() {
-    return state.currentIndex == OnboardingData.screens.length - 1;
+  bool isLastPage(BuildContext context) {
+    return state.currentIndex == OnboardingData.getScreens(context).length - 1;
   }
 
   void navigateToHome(BuildContext context) {

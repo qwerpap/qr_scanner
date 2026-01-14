@@ -1,24 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 enum NotificationType {
   copied,
   saved,
   shared,
   noQrFound,
-  urlOpenError;
+  urlOpenError,
+  simulatorNotSupported;
 
-  String get message {
+  String message(BuildContext context) {
     switch (this) {
       case NotificationType.copied:
-        return 'Copied to clipboard';
+        return context.l10n.copiedToClipboard;
       case NotificationType.saved:
-        return 'Saved successfully';
+        return context.l10n.savedSuccessfully;
       case NotificationType.shared:
-        return 'Shared successfully';
+        return context.l10n.sharedSuccessfully;
       case NotificationType.noQrFound:
-        return 'No QR code found in image';
+        return context.l10n.noQrFoundInImage;
       case NotificationType.urlOpenError:
-        return 'Cannot open URL';
+        return context.l10n.cannotOpenUrl;
+      case NotificationType.simulatorNotSupported:
+        return context.l10n.simulatorNotSupported;
     }
   }
 
@@ -34,6 +38,8 @@ enum NotificationType {
         return Icons.error_outline;
       case NotificationType.urlOpenError:
         return Icons.error_outline;
+      case NotificationType.simulatorNotSupported:
+        return Icons.phone_iphone;
     }
   }
 }

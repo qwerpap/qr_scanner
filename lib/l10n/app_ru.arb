@@ -1,0 +1,220 @@
+{
+  "@@locale": "ru",
+  "appTitle": "QR Сканер",
+  "welcome": "Добро пожаловать!",
+  "welcomeWithName": "Добро пожаловать, {name}!",
+  "scanQrCode": "Сканировать QR код",
+  "createQrCode": "Создать QR код",
+  "myQrCodes": "Мои QR коды",
+  "history": "История",
+  "profile": "Профиль",
+  "retry": "Повторить",
+  "error": "Ошибка",
+  "processing": "Обработка...",
+  "continueText": "Продолжить",
+  "termsOfService": "Условия использования",
+  "privacyPolicy": "Политика конфиденциальности",
+  "and": "и",
+  "subscriptionPurchasedSuccessfully": "Подписка успешно приобретена!",
+  "purchasesRestoredSuccessfully": "Покупки успешно восстановлены!",
+  "noProductsAvailable": "Продукты недоступны. Проверьте подключение к интернету и попробуйте снова.",
+  "noInternetConnection": "Нет подключения к интернету. Проверьте сеть и попробуйте снова.",
+  "productsTemporarilyUnavailable": "Продукты временно недоступны. Попробуйте позже.",
+  "failedToLoadProducts": "Не удалось загрузить продукты. Проверьте подключение к интернету и попробуйте снова.",
+  "copiedToClipboard": "Скопировано в буфер обмена",
+  "savedSuccessfully": "Успешно сохранено",
+  "sharedSuccessfully": "Успешно отправлено",
+  "noQrFoundInImage": "QR код не найден в изображении",
+  "cannotOpenUrl": "Не удалось открыть URL",
+  "simulatorNotSupported": "Сканирование изображений недоступно на iOS симуляторе. Пожалуйста, используйте реальное устройство.",
+  "cameraUnavailable": "Камера недоступна",
+  "cameraNotAvailableOnSimulator": "Камера недоступна\nна iOS симуляторе",
+  "cameraAccessDenied": "Доступ к камере запрещен",
+  "cameraPermissionDenied": "Доступ к камере запрещен.\nВключите его в Настройках.",
+  "cameraPermissionRequired": "Требуется разрешение камеры",
+  "cameraPermissionRequiredToScan": "Требуется разрешение камеры\nдля сканирования QR кодов",
+  "initializingCamera": "Инициализация камеры...",
+  "initializingCameraTitle": "Инициализация камеры",
+  "cameraPermissionRequiredText": "Требуется разрешение камеры",
+  "loadingCamera": "Загрузка камеры...",
+  "useGalleryButtonToScan": "Используйте кнопку Галерея для сканирования QR из фотографий",
+  "openSettings": "Открыть настройки",
+  "requestPermission": "Запросить разрешение",
+  "pleaseEnableCameraPermission": "Пожалуйста, включите разрешение камеры\nв Настройках",
+  "restorePurchases": "Восстановить покупки",
+  "autoRenewableCancelAnytime": "Автоматическое продление. Отменить можно в любое время.",
+  "retryButton": "Повторить",
+  "manageYourQrCodesEasily": "Управляйте QR кодами легко",
+  "home": "Главная",
+  "scan": "Сканировать",
+  "scanQr": "Сканировать QR",
+  "quickScan": "Быстрое сканирование",
+  "createQr": "Создать QR",
+  "generateNew": "Создать новый",
+  "myQrCodesTitle": "Мои QR коды",
+  "savedCodes": "Сохраненные коды",
+  "historyTitle": "История",
+  "recentScans": "Недавние сканирования",
+  "language": "Язык",
+  "english": "Английский",
+  "russian": "Русский",
+  "next": "Далее",
+  "skip": "Пропустить",
+  "getStarted": "Начать",
+  "onboardingWelcomeTitle": "Добро пожаловать",
+  "onboardingWelcomeBold": "Сканируйте, создавайте и управляйте QR-кодами легко",
+  "onboardingScanTitle": "Сканирование QR-кодов",
+  "onboardingScanBold": "Быстро сканируйте любой QR-код",
+  "onboardingScanRegular": "Наведите камеру на QR-код и получите\nмгновенный результат",
+  "onboardingCreateTitle": "Создание QR-кодов",
+  "onboardingCreateBold": "Генерируйте QR-коды мгновенно",
+  "onboardingCreateRegular": "Введите URL, текст или контакт и получите\nсвой QR-код",
+  "onboardingManageTitle": "Управление и обмен",
+  "onboardingManageBold": "Сохраняйте, делитесь и отслеживайте все ваши QR-коды",
+  "onboardingManageRegular": "Доступ к Моим QR-кодам и Истории в любое время",
+  "subscription": "Подписка",
+  "active": "Активна",
+  "free": "Бесплатно",
+  "upgradeToPremium": "Перейти на Premium",
+  "upgradeToPremiumToUnlock": "Перейдите на Premium, чтобы разблокировать все функции",
+  "yourSubscriptionIsActive": "Ваша подписка активна",
+  "expiresNever": "Истекает: Никогда",
+  "editQrCode": "Редактировать QR-код",
+  "scanSuccessful": "Сканирование успешно",
+  "qrCodeDecodedSuccessfully": "QR-код успешно расшифрован",
+  "contentType": "Тип содержимого",
+  "designOptions": "Параметры дизайна",
+  "color": "Цвет",
+  "websiteUrl": "URL веб-сайта",
+  "fullContent": "Полное содержимое",
+  "scanned": "Отсканировано",
+  "type": "Тип",
+  "scanResult": "Результат сканирования",
+  "noQrCodeData": "Нет данных QR-кода",
+  "goBack": "Назад",
+  "goToMyQrCodes": "Перейти к Моим QR-кодам",
+  "gallery": "Галерея",
+  "camera": "Камера",
+  "deleteQrCode": "Удалить QR-код",
+  "clearHistory": "Очистить историю",
+  "all": "Все",
+  "scannedCategory": "Отсканированные",
+  "createdCategory": "Созданные",
+  "urlCategory": "URL",
+  "textCategory": "Текст",
+  "wifiCategory": "WiFi",
+  "contactCategory": "Контакт",
+  "unlimitedQrScans": "Неограниченное сканирование QR",
+  "scanAsManyQrCodesAsYouWant": "Сканируйте столько QR-кодов, сколько хотите",
+  "createAllQrTypes": "Создание всех типов QR",
+  "urlTextContactWifiAndMore": "URL, Текст, Контакт, WiFi и многое другое",
+  "noAds": "Без рекламы",
+  "cleanDistractionFreeExperience": "Чистый опыт без отвлечений",
+  "cloudBackup": "Облачное резервное копирование",
+  "syncAcrossAllYourDevices": "Синхронизация на всех ваших устройствах",
+  "advancedAnalytics": "Расширенная аналитика",
+  "trackScansAndUsagePatterns": "Отслеживайте сканирования и модели использования",
+  "recentActivity": "Недавняя активность",
+  "delete": "Удалить",
+  "cancel": "Отмена",
+  "clear": "Очистить",
+  "areYouSureYouWantToDeleteThisQrCode": "Вы уверены, что хотите удалить этот QR-код?",
+  "areYouSureYouWantToClearAllHistory": "Вы уверены, что хотите очистить всю историю? Это действие нельзя отменить.",
+  "unlockFullQrTools": "Разблокируйте полный\nнабор QR-инструментов",
+  "unlimitedScansCustomQrCreationAndFullHistoryAccess": "Неограниченное сканирование, создание QR-кодов и полный доступ к истории.",
+  "restore": "Восстановить",
+  "week": "неделя",
+  "month": "месяц",
+  "year": "год",
+  "threeDayFreeTrial": "3-дневный бесплатный период",
+  "cancelAnytime": "Отмена в любое время",
+  "bestValueOption": "Лучшее предложение",
+  "mostPopular": "ПОПУЛЯРНО",
+  "save": "Экономия",
+  "savePercent": "ЭКОНОМИЯ {percent}%",
+  "@savePercent": {
+    "placeholders": {
+      "percent": {
+        "type": "String"
+      }
+    }
+  },
+  "alignQrCodeWithinFrame": "Выровняйте QR-код в рамке",
+  "keepYourDeviceSteady": "Держите устройство неподвижно",
+  "flash": "Вспышка",
+  "switchCamera": "Переключить",
+  "addLogo": "Добавить логотип",
+  "logoAdded": "Логотип добавлен",
+  "proFeature": "Pro функция",
+  "updateQrCode": "Обновить QR-код",
+  "generateQrCode": "Создать QR-код",
+  "contactName": "Имя контакта",
+  "enterContactName": "Введите имя контакта...",
+  "enterText": "Введите текст...",
+  "theQrCodeIsReady": "QR-код готов",
+  "share": "Поделиться",
+  "save": "Сохранить",
+  "searchQrCodes": "Поиск QR-кодов...",
+  "noQrCodesYet": "QR-кодов пока нет",
+  "justNow": "Только что",
+  "minuteAgo": "{count} минуту назад",
+  "@minuteAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "minutesAgo": "{count} минут назад",
+  "@minutesAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hourAgo": "{count} час назад",
+  "@hourAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "hoursAgo": "{count} часов назад",
+  "@hoursAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "dayAgo": "{count} день назад",
+  "@dayAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "daysAgo": "{count} дней назад",
+  "@daysAgo": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "monthJan": "Янв",
+  "monthFeb": "Фев",
+  "monthMar": "Мар",
+  "monthApr": "Апр",
+  "monthMay": "Май",
+  "monthJun": "Июн",
+  "monthJul": "Июл",
+  "monthAug": "Авг",
+  "monthSep": "Сен",
+  "monthOct": "Окт",
+  "monthNov": "Ноя",
+  "monthDec": "Дек"
+}

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/services/user_preferences_service.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_sliver_app_bar.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/features/profile/presentation/widgets/language_selector.dart';
 import 'package:qr_scanner/features/profile/presentation/widgets/name_input_dialog.dart';
 import 'package:qr_scanner/features/profile/presentation/widgets/subscription_info.dart';
@@ -55,8 +56,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          const CustomSliverAppBar(
-            title: 'Profile',
+          CustomSliverAppBar(
+            title: context.l10n.profile,
             showCloseButton: true,
             showDivider: false,
             showShadow: false,

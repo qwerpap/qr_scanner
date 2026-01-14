@@ -41,6 +41,9 @@ class AppsFlyerService {
         afDevKey: _devKey,
         appId: _appleAppId,
         showDebug: true,
+        // Настраиваем ожидание ATT разрешения (60 секунд)
+        // Это гарантирует, что IDFA будет доступен при первом запуске, если пользователь дал согласие
+        timeToWaitForATTUserAuthorization: 60,
       );
 
       _appsflyerSdk = AppsflyerSdk(appsFlyerOptions);
@@ -54,14 +57,22 @@ class AppsFlyerService {
       _isInitialized = true;
       _talker.debug('AppsFlyer initialized');
 
-      // Устанавливаем user ID только если ATT разрешен
+      // Передаем ATT статус в AppsFlyer SDK
       try {
         final attStatus = await _attService.getStatus();
-        if (attStatus == AttStatus.authorized && _appsflyerSdk != null) {
-          _talker.debug('AppsFlyer: ATT authorized, user tracking enabled');
+        final attStatusString = attStatus.toString().split('.').last;
+        
+        if (_appsflyerSdk != null) {
+          // Передаем ATT статус в AppsFlyer через setAdditionalData
+          _appsflyerSdk!.setAdditionalData({'att_status': attStatusString});
+          _talker.debug('AppsFlyer: ATT status sent to SDK: $attStatusString');
+          
+          if (attStatus == AttStatus.authorized) {
+            _talker.debug('AppsFlyer: ATT authorized, user tracking enabled');
+          }
         }
       } catch (e) {
-        _talker.warning('AppsFlyer: Failed to check ATT status: $e');
+        _talker.warning('AppsFlyer: Failed to check/send ATT status: $e');
       }
     } catch (e, stackTrace) {
       _talker.error('AppsFlyer: Failed to initialize', e, stackTrace);
@@ -84,9 +95,11 @@ class AppsFlyerService {
           final afStatus = data['af_status']?.toString();
           final isFirstLaunch = data['is_first_launch']?.toString();
           
-          // Проверяем Apple Search Ads данные
+          // Улучшенная проверка Apple Search Ads
           final isSearchAds = data['is_search_ads']?.toString() == 'true' ||
-              mediaSource?.toLowerCase().contains('searchads') == true;
+              mediaSource?.toLowerCase() == 'searchads' ||
+              mediaSource?.toLowerCase().contains('apple_search_ads') == true ||
+              campaign?.toLowerCase().contains('searchads') == true;
           
           if (mediaSource != null) {
             attributionData['media_source'] = mediaSource;
@@ -100,15 +113,19 @@ class AppsFlyerService {
           if (isFirstLaunch != null) {
             attributionData['is_first_launch'] = isFirstLaunch;
           }
+          
+          // Улучшенная передача Apple Search Ads
           if (isSearchAds) {
             attributionData['is_apple_search_ads'] = 'true';
+            attributionData['source'] = 'apple_search_ads'; // Явно указываем источник
             _talker.debug('AppsFlyer: Apple Search Ads detected');
+          } else {
+            attributionData['source'] = 'appsflyer';
           }
           
           // Добавляем ATT статус
           _attService.getStatus().then((attStatus) {
             attributionData['att_status'] = attStatus.toString().split('.').last;
-            attributionData['source'] = 'appsflyer';
             
             _appHudService!.setAttribution(attributionData);
             _talker.debug('AppsFlyer: Attribution data sent to AppHud: $attributionData');

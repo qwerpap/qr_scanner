@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/features/paywall/presentation/widgets/paywall_header.dart';
 
 class PaywallGradientSection extends StatelessWidget {
@@ -83,7 +84,7 @@ class PaywallGradientSection extends StatelessWidget {
               Image.asset(ImageSource.paywallQr, height: 217),
               const SizedBox(height: 16),
               Text(
-                'Unlock Full QR\nTools',
+                context.l10n.unlockFullQrTools,
                 textAlign: TextAlign.center,
                 style: AppFonts.titleLarge.copyWith(
                   fontSize: 34,
@@ -93,7 +94,7 @@ class PaywallGradientSection extends StatelessWidget {
               ),
               const SizedBox(height: 13),
               Text(
-                'Unlimited scans, custom QR creation, and full history access.',
+                context.l10n.unlimitedScansCustomQrCreationAndFullHistoryAccess,
                 textAlign: TextAlign.center,
                 style: AppFonts.titleMedium.copyWith(
                   color: AppColors.greyTextColor,

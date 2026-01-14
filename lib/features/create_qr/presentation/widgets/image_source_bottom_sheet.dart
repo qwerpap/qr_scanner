@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 class ImageSourceBottomSheet extends StatelessWidget {
   const ImageSourceBottomSheet({
@@ -66,7 +67,7 @@ class ImageSourceBottomSheet extends StatelessWidget {
               _buildOption(
                 context: context,
                 icon: Icons.photo_library,
-                title: 'Gallery',
+                title: context.l10n.gallery,
                 onTap: () {
                   Navigator.of(context).pop();
                   onGalleryTap();
@@ -76,7 +77,7 @@ class ImageSourceBottomSheet extends StatelessWidget {
               _buildOption(
                 context: context,
                 icon: Icons.camera_alt,
-                title: 'Camera',
+                title: context.l10n.camera,
                 onTap: () {
                   Navigator.of(context).pop();
                   onCameraTap();

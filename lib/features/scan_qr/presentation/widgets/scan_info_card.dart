@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/core/shared/widgets/base_container.dart';
 import 'package:qr_scanner/core/shared/widgets/circle_icon.dart';
 
@@ -22,7 +23,7 @@ class ScanInfoCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Align QR code within frame',
+                context.l10n.alignQrCodeWithinFrame,
                 style: AppFonts.titleLarge.copyWith(
                   color: AppColors.greyTextColor,
                   fontWeight: FontWeight.w400,
@@ -30,7 +31,7 @@ class ScanInfoCard extends StatelessWidget {
               ),
               const SizedBox(height: 2),
               Text(
-                'Keep your device steady',
+                context.l10n.keepYourDeviceSteady,
                 style: AppFonts.titleLarge.copyWith(
                   fontSize: 13,
                   fontWeight: FontWeight.w300,

@@ -1,46 +1,57 @@
+import 'package:qr_scanner/l10n/app_localizations.dart';
+
 class TimeFormatter {
   TimeFormatter._();
 
-  static String formatScannedTime(DateTime scannedAt) {
+  static String formatScannedTime(
+    DateTime scannedAt,
+    AppLocalizations localizations,
+  ) {
     final now = DateTime.now();
     final difference = now.difference(scannedAt);
 
     if (difference.inSeconds < 60) {
-      return 'Just now';
+      return localizations.justNow;
     }
 
     if (difference.inMinutes < 60) {
       final minutes = difference.inMinutes;
-      return '$minutes ${minutes == 1 ? 'minute' : 'minutes'} ago';
+      return minutes == 1
+          ? localizations.minuteAgo(minutes)
+          : localizations.minutesAgo(minutes);
     }
 
     if (difference.inHours < 24) {
       final hours = difference.inHours;
-      return '$hours ${hours == 1 ? 'hour' : 'hours'} ago';
+      return hours == 1
+          ? localizations.hourAgo(hours)
+          : localizations.hoursAgo(hours);
     }
 
     if (difference.inDays < 7) {
       final days = difference.inDays;
-      return '$days ${days == 1 ? 'day' : 'days'} ago';
+      return days == 1
+          ? localizations.dayAgo(days)
+          : localizations.daysAgo(days);
     }
 
-    return _formatDate(scannedAt);
+    return _formatDate(scannedAt, localizations);
   }
 
-  static String _formatDate(DateTime date) {
+  static String _formatDate(DateTime date, AppLocalizations localizations) {
     final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
+      localizations.monthJan,
+      localizations.monthFeb,
+      localizations.monthMar,
+      localizations.monthApr,
+      localizations.monthMay,
+      localizations.monthJun,
+      localizations.monthJul,
+      localizations.monthAug,
+      localizations.monthSep,
+      localizations.monthOct,
+      localizations.monthNov,
+      localizations.monthDec,
     ];
 
     final day = date.day;

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/features/home/data/constants/action_cards_data.dart';
 import 'package:qr_scanner/features/home/presentation/cubit/home_cubit.dart';
 import 'package:qr_scanner/features/home/presentation/cubit/home_state.dart';
@@ -10,35 +11,82 @@ import 'package:qr_scanner/features/home/presentation/widgets/action_card.dart';
 import 'package:qr_scanner/features/home/presentation/widgets/recent_card.dart';
 import 'package:qr_scanner/features/home/presentation/widgets/welcome_text.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
-  String _getRouteForActionCard(String title) {
-    switch (title) {
-      case 'Scan QR':
-        return NavigationConstants.scanQr;
-      case 'Create QR':
-        return '/create_qr_code';
-      case 'My QR Codes':
-        return NavigationConstants.myQrCodes;
-      case 'History':
-        return NavigationConstants.history;
-      default:
-        return NavigationConstants.home;
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  String _getRouteForActionCard(String title, BuildContext context) {
+    if (title == context.l10n.scanQr) {
+      return NavigationConstants.scanQr;
+    } else if (title == context.l10n.createQr) {
+      return '/create_qr_code';
+    } else if (title == context.l10n.myQrCodesTitle) {
+      return NavigationConstants.myQrCodes;
+    } else if (title == context.l10n.historyTitle) {
+      return NavigationConstants.history;
     }
+    return NavigationConstants.home;
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => getIt<HomeCubit>()..initialize(),
-      child: Scaffold(
-        body: SafeArea(
-          child: BlocBuilder<HomeCubit, HomeState>(
-            builder: (context, state) {
-              if (state.isLoading) {
-                return const Center(child: CircularProgressIndicator());
-              }
+      create: (context) => getIt<HomeCubit>(),
+      child: _HomeScreenContent(
+        onRouteForActionCard: _getRouteForActionCard,
+      ),
+    );
+  }
+}
+
+class _HomeScreenContent extends StatefulWidget {
+  final String Function(String, BuildContext) onRouteForActionCard;
+
+  const _HomeScreenContent({
+    required this.onRouteForActionCard,
+  });
+
+  @override
+  State<_HomeScreenContent> createState() => _HomeScreenContentState();
+}
+
+class _HomeScreenContentState extends State<_HomeScreenContent> {
+  bool _hasInitialized = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<HomeCubit, HomeState>(
+      listener: (context, state) {
+        // Listener for state changes
+      },
+      builder: (context, state) {
+        // Initialize on first build
+        if (!_hasInitialized) {
+          _hasInitialized = true;
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (mounted && !state.isLoading) {
+              context.read<HomeCubit>().initialize(localizations: context.l10n);
+            }
+          });
+        }
+
+        return Scaffold(
+          body: SafeArea(
+            child: _buildContent(context, state),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildContent(BuildContext context, HomeState state) {
+    if (state.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
               if (state.errorMessage != null &&
                   state.recentActivities.isEmpty) {
@@ -46,11 +94,11 @@ class HomeScreen extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text('Error: ${state.errorMessage}'),
+                      Text('${context.l10n.error}: ${state.errorMessage}'),
                       const SizedBox(height: 16),
                       ElevatedButton(
-                        onPressed: () => context.read<HomeCubit>().refresh(),
-                        child: const Text('Retry'),
+                        onPressed: () => context.read<HomeCubit>().refresh(localizations: context.l10n),
+                        child: Text(context.l10n.retryButton),
                       ),
                     ],
                   ),
@@ -76,15 +124,16 @@ class HomeScreen extends StatelessWidget {
                             crossAxisSpacing: 16,
                           ),
                       delegate: SliverChildBuilderDelegate((context, index) {
-                        final card = ActionCardsData.cards[index];
+                        final cards = ActionCardsData.getCards(context);
+                        final card = cards[index];
                         return ActionCard(
                           model: card,
                           onTap: () {
-                            final route = _getRouteForActionCard(card.title);
+                            final route = widget.onRouteForActionCard(card.title, context);
                             context.push(route);
                           },
                         );
-                      }, childCount: ActionCardsData.cards.length),
+                      }, childCount: ActionCardsData.getCards(context).length),
                     ),
                   ),
                   if (state.recentActivities.isNotEmpty)
@@ -102,7 +151,7 @@ class HomeScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  'Recent Activity',
+                                  context.l10n.recentActivity,
                                   style: AppFonts.displayMedium.copyWith(
                                     fontSize: 22,
                                   ),
@@ -149,10 +198,5 @@ class HomeScreen extends StatelessWidget {
                     ),
                 ],
               );
-            },
-          ),
-        ),
-      ),
-    );
   }
 }

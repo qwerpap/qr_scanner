@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qr_scanner/l10n/app_localizations.dart';
 import 'package:qr_scanner/core/theme/app_colors.dart';
 import 'package:qr_scanner/core/utils/time_formatter.dart';
 import '../../../scan_result/domain/entities/qr_code_type.dart';
@@ -7,8 +8,15 @@ import '../../domain/models/recent_activity_model.dart';
 class QrCodeToRecentActivityMapper {
   QrCodeToRecentActivityMapper._();
 
-  static RecentActivityModel map(QrCodeData qrCodeData) {
-    final timestamp = TimeFormatter.formatScannedTime(qrCodeData.scannedAt);
+  static RecentActivityModel map(
+    QrCodeData qrCodeData, {
+    AppLocalizations? localizations,
+  }) {
+    // Если локализация не передана, используем английский по умолчанию
+    // В реальном приложении это должно быть обработано лучше
+    final timestamp = localizations != null
+        ? TimeFormatter.formatScannedTime(qrCodeData.scannedAt, localizations)
+        : _formatScannedTimeFallback(qrCodeData.scannedAt);
     final title = _getTitle(qrCodeData);
     final color = _getColor(qrCodeData.type);
     final iconData = _getIcon(qrCodeData.type);
@@ -84,5 +92,51 @@ class QrCodeToRecentActivityMapper {
       case QrCodeType.unknown:
         return AppColors.primaryColor;
     }
+  }
+
+  // Fallback для случая, когда локализация не доступна
+  static String _formatScannedTimeFallback(DateTime scannedAt) {
+    final now = DateTime.now();
+    final difference = now.difference(scannedAt);
+
+    if (difference.inSeconds < 60) {
+      return 'Just now';
+    }
+
+    if (difference.inMinutes < 60) {
+      final minutes = difference.inMinutes;
+      return '$minutes ${minutes == 1 ? 'minute' : 'minutes'} ago';
+    }
+
+    if (difference.inHours < 24) {
+      final hours = difference.inHours;
+      return '$hours ${hours == 1 ? 'hour' : 'hours'} ago';
+    }
+
+    if (difference.inDays < 7) {
+      final days = difference.inDays;
+      return '$days ${days == 1 ? 'day' : 'days'} ago';
+    }
+
+    final months = [
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
+    ];
+
+    final day = scannedAt.day;
+    final month = months[scannedAt.month - 1];
+    final year = scannedAt.year;
+
+    return '$month $day, $year';
   }
 }

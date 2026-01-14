@@ -88,6 +88,7 @@ class CustomNotification extends StatelessWidget {
               style: AppFonts.titleMedium.copyWith(
                 color: AppColors.blackColor,
                 fontSize: 15,
+                decoration: TextDecoration.none,
               ),
             ),
           ),

@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+import '../../../../core/l10n/app_localizations_helper.dart';
 import '../../../../core/subscription/subscription_product.dart';
 import '../models/plan_model.dart';
 
 /// Маппер для преобразования SubscriptionProduct в PlanModel для UI.
 class SubscriptionProductToPlanMapper {
   /// Преобразует SubscriptionProduct в PlanModel.
-  static PlanModel map(SubscriptionProduct product) {
+  static PlanModel map(SubscriptionProduct product, BuildContext context) {
     // Определяем период и описание на основе product ID
     String period;
     String description;
@@ -15,19 +17,19 @@ class SubscriptionProductToPlanMapper {
 
     switch (product.id) {
       case 'sonicforge_weekly':
-        period = '/ week';
-        description = '3-day free trial';
-        badgeText = 'MOST POPULAR';
+        period = '/ ${context.l10n.week}';
+        description = context.l10n.threeDayFreeTrial;
+        badgeText = context.l10n.mostPopular;
         badgePosition = BadgePosition.topLeft;
         break;
       case 'sonicforge_monthly':
-        period = '/ month';
-        description = 'Cancel anytime';
+        period = '/ ${context.l10n.month}';
+        description = context.l10n.cancelAnytime;
         break;
       case 'sonicforge_yearly':
-        period = '/ year';
-        description = 'Best value option';
-        badgeText = 'SAVE 70%';
+        period = '/ ${context.l10n.year}';
+        description = context.l10n.bestValueOption;
+        badgeText = context.l10n.savePercent('70');
         badgePosition = BadgePosition.topRight;
         // Вычисляем оригинальную цену (месячная * 12)
         // Это примерная логика, можно улучшить
@@ -43,7 +45,7 @@ class SubscriptionProductToPlanMapper {
             if (estimatedYearly > currentPrice) {
               originalPrice = '${product.currencyCode == 'USD' ? '\$' : product.currencyCode}${estimatedYearly.toStringAsFixed(2)}';
               final savings = estimatedYearly - currentPrice;
-              savingsText = 'Save ${product.currencyCode == 'USD' ? '\$' : product.currencyCode}${savings.toStringAsFixed(0)}';
+              savingsText = '${context.l10n.save} ${product.currencyCode == 'USD' ? '\$' : product.currencyCode}${savings.toStringAsFixed(0)}';
             }
           }
         } catch (_) {
@@ -69,7 +71,7 @@ class SubscriptionProductToPlanMapper {
   }
 
   /// Преобразует список SubscriptionProduct в список PlanModel.
-  static List<PlanModel> mapList(List<SubscriptionProduct> products) {
-    return products.map(map).toList();
+  static List<PlanModel> mapList(List<SubscriptionProduct> products, BuildContext context) {
+    return products.map((product) => map(product, context)).toList();
   }
 }

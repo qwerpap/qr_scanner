@@ -2,8 +2,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../bloc/bloc_providers.dart';
 
+import 'package:flutter/material.dart';
+
 class UserPreferencesService {
   static const String _keyUserName = 'user_name';
+  static const String _keyLanguageCode = 'language_code';
   final Talker _talker = getIt<Talker>();
 
   Future<String?> getUserName() async {
@@ -38,6 +41,35 @@ class UserPreferencesService {
     } catch (e, stackTrace) {
       _talker.error('Error checking user name', e, stackTrace);
       return false;
+    }
+  }
+
+  Future<Locale?> getSavedLocale() async {
+    try {
+      _talker.info('Getting saved locale from SharedPreferences');
+      final prefs = await SharedPreferences.getInstance();
+      final languageCode = prefs.getString(_keyLanguageCode);
+      if (languageCode != null) {
+        _talker.info('Saved locale: $languageCode');
+        return Locale(languageCode);
+      }
+      _talker.info('No saved locale found');
+      return null;
+    } catch (e, stackTrace) {
+      _talker.error('Error getting saved locale', e, stackTrace);
+      return null;
+    }
+  }
+
+  Future<void> setSavedLocale(Locale locale) async {
+    try {
+      _talker.info('Setting saved locale: ${locale.languageCode}');
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString(_keyLanguageCode, locale.languageCode);
+      _talker.info('Locale saved successfully');
+    } catch (e, stackTrace) {
+      _talker.error('Error saving locale', e, stackTrace);
+      rethrow;
     }
   }
 }

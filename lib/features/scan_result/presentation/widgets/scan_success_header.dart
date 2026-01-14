@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 class ScanSuccessHeader extends StatelessWidget {
   const ScanSuccessHeader({super.key});
@@ -10,9 +11,9 @@ class ScanSuccessHeader extends StatelessWidget {
       children: [
         Image.asset(ImageSource.success, height: 100, width: 100),
         const SizedBox(height: 16),
-        Text('Scan Successful', style: AppFonts.titleLarge),
+        Text(context.l10n.scanSuccessful, style: AppFonts.titleLarge),
         const SizedBox(height: 3),
-        Text('QR code decoded successfully', style: AppFonts.titleMedium),
+        Text(context.l10n.qrCodeDecodedSuccessfully, style: AppFonts.titleMedium),
       ],
     );
   }

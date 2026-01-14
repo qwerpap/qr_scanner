@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_elevated_button.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_notification.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_sliver_app_bar.dart';
@@ -50,10 +51,16 @@ class CreateQrCodeScreen extends StatelessWidget {
             }
           },
           builder: (context, state) {
-            return CustomScrollView(
-              slivers: [
+            return GestureDetector(
+              onTap: () {
+                // Сбрасываем фокус при клике вне текстового поля
+                FocusScope.of(context).unfocus();
+              },
+              behavior: HitTestBehavior.opaque,
+              child: CustomScrollView(
+                slivers: [
                 CustomSliverAppBar(
-                  title: editingQrCode != null ? 'Edit QR Code' : 'Create QR Code',
+                  title: editingQrCode != null ? context.l10n.editQrCode : context.l10n.createQrCode,
                   showCloseButton: true,
                   showDivider: false,
                 ),
@@ -93,13 +100,14 @@ class CreateQrCodeScreen extends StatelessWidget {
                               .generateQrCode();
                         },
                         title: state.editingQrCodeId != null
-                            ? 'Update QR Code'
-                            : 'Generate QR Code',
+                            ? context.l10n.updateQrCode
+                            : context.l10n.generateQrCode,
                       ),
                     ]),
                   ),
                 ),
               ],
+            ),
             );
           },
         ),

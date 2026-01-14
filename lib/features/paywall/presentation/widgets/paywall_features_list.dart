@@ -7,17 +7,18 @@ class PaywallFeaturesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final features = FeaturesData.getFeatures(context);
     return SliverList(
       delegate: SliverChildBuilderDelegate(
         (context, index) {
           return Padding(
             padding: EdgeInsets.only(
-              bottom: index < FeaturesData.features.length - 1 ? 16 : 0,
+              bottom: index < features.length - 1 ? 16 : 0,
             ),
-            child: FeatureCard(feature: FeaturesData.features[index]),
+            child: FeatureCard(feature: features[index]),
           );
         },
-        childCount: FeaturesData.features.length,
+        childCount: features.length,
       ),
     );
   }

@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:talker_flutter/talker_flutter.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/core/shared/widgets/base_container.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_sliver_app_bar.dart';
 import 'package:qr_scanner/core/shared/widgets/qr_code_section.dart';
@@ -48,8 +46,8 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
           return Scaffold(
             body: CustomScrollView(
               slivers: [
-                const CustomSliverAppBar(
-                  title: 'Scan QR Code',
+                CustomSliverAppBar(
+                  title: context.l10n.scanQrCode,
                   showDivider: false,
                   showCloseButton: true,
                 ),
@@ -63,9 +61,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.4,
                         child: qrState.isCheckingPermission
-                            ? const Center(
-                                child: CircularProgressIndicator(),
-                              )
+                            ? const Center(child: CircularProgressIndicator())
                             : QrCodeSection(
                                 hasPermission: qrState.hasPermission,
                                 onPermissionRequest: () {
@@ -85,6 +81,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
                         padding: const EdgeInsets.all(16),
                         child: ControlButtonsList(
                           buttons: ControlButtonsData.getButtons(
+                            context: context,
                             onFlashTap: () {
                               if (qrState.hasPermission &&
                                   _permissionStatus !=
@@ -109,7 +106,8 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
                               _handleGalleryTap(blocContext, qrState);
                             },
                             isFlashActive: qrState.isFlashOn,
-                            isSwitchActive: qrState.currentFacing == CameraFacing.front,
+                            isSwitchActive:
+                                qrState.currentFacing == CameraFacing.front,
                             isGalleryActive: qrState.isPickingImage,
                           ),
                         ),
@@ -140,89 +138,8 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
     BuildContext blocContext,
     dynamic qrState,
   ) async {
-    final talker = getIt<Talker>();
-    if (qrState.isIOSSimulator) {
-      talker.info('iOS simulator: allowing gallery access (simulated)');
-      blocContext.read<QrScannerCubit>().pickImageFromGallery();
-      return;
-    }
-
-    if (Platform.isIOS) {
-      final result = await Permission.photos.request();
-      if (result.isGranted || result.isLimited) {
-        blocContext.read<QrScannerCubit>().pickImageFromGallery();
-        return;
-      }
-      if (result.isDenied) {
-        final retry = await showDialog<bool>(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Permission required'),
-              content: const Text(
-                'Photo library access is required to pick images. Retry or open settings?',
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Retry'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(null),
-                  child: const Text('Open Settings'),
-                ),
-              ],
-            );
-          },
-        );
-        if (retry == true) {
-          final retryStatus = await Permission.photos.request();
-          if (retryStatus.isGranted || retryStatus.isLimited) {
-            blocContext.read<QrScannerCubit>().pickImageFromGallery();
-            return;
-          }
-        } else if (retry == null) {
-          talker.info('Opening app settings for photo permission');
-          openAppSettings();
-          return;
-        }
-        talker.warning('Photo permission denied');
-        return;
-      }
-      if (result.isPermanentlyDenied || result.isRestricted) {
-        final open = await showDialog<bool>(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: const Text('Permission required'),
-              content: const Text(
-                'Photo library access is restricted. Open settings?',
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(false),
-                  child: const Text('Cancel'),
-                ),
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(true),
-                  child: const Text('Open Settings'),
-                ),
-              ],
-            );
-          },
-        );
-        if (open == true) {
-          talker.info('Opening app settings for photo permission');
-          openAppSettings();
-        }
-        return;
-      }
-    } else {
-      blocContext.read<QrScannerCubit>().pickImageFromGallery();
-    }
+    // На iOS симуляторе и Android - просто вызываем pickImageFromGallery
+    // Логика разрешений уже обработана в cubit
+    blocContext.read<QrScannerCubit>().pickImageFromGallery();
   }
 }

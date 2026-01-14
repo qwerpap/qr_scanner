@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_dialog.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_sliver_app_bar.dart';
 import 'package:qr_scanner/features/history/data/constants/history_categories_data.dart';
@@ -34,13 +35,13 @@ class HistoryScreen extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Error: ${state.errorMessage}'),
+                    Text('${context.l10n.error}: ${state.errorMessage}'),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () => context.read<HistoryBloc>().add(
                         const HistoryRefreshed(),
                       ),
-                      child: const Text('Retry'),
+                      child: Text(context.l10n.retry),
                     ),
                   ],
                 ),
@@ -50,7 +51,7 @@ class HistoryScreen extends StatelessWidget {
             return CustomScrollView(
               slivers: [
                 CustomSliverAppBar(
-                  title: 'History',
+                  title: context.l10n.historyTitle,
                   showDivider: false,
                   showShadow: false,
                   automaticallyImplyLeading: false,
@@ -87,7 +88,7 @@ class HistoryScreen extends StatelessWidget {
                 ),
                 SliverToBoxAdapter(
                   child: HistoryCategoriesList(
-                    categories: HistoryCategoriesData.categories,
+                    categories: HistoryCategoriesData.getCategories(context),
                     activeCategoryId: state.activeCategoryId,
                     onCategoryTap: (categoryId) {
                       context.read<HistoryBloc>().add(
@@ -150,9 +151,9 @@ class HistoryScreen extends StatelessWidget {
   void _showClearHistoryDialog(BuildContext context) {
     CustomDialog.show(
       context: context,
-      title: 'Clear History',
-      message: 'Are you sure you want to clear all history? This action cannot be undone.',
-      confirmText: 'Clear',
+      title: context.l10n.clearHistory,
+      message: context.l10n.areYouSureYouWantToClearAllHistory,
+      confirmText: context.l10n.clear,
       cancelText: 'Cancel',
       isDestructive: true,
       onConfirm: () {

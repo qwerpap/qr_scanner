@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_elevated_button.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/features/onboarding/data/models/onboarding_model.dart';
 import 'package:qr_scanner/features/onboarding/presentation/widgets/onboarding_pagination.dart';
 
@@ -42,7 +43,7 @@ class OnboardingBottomSection extends StatelessWidget {
                 ? GestureDetector(
                     onTap: onSkipPressed,
                     child: Text(
-                      'Skip',
+                      context.l10n.skip,
                       style: AppFonts.titleMedium.copyWith(
                         color: AppColors.greyTextColor,
                       ),

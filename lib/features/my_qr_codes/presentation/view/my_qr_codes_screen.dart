@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_dialog.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_sliver_app_bar.dart';
@@ -41,13 +42,13 @@ class _MyQrCodesScreenState extends State<MyQrCodesScreen> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text('Error: ${state.errorMessage}'),
+                    Text('${context.l10n.error}: ${state.errorMessage}'),
                     const SizedBox(height: 16),
                     ElevatedButton(
                       onPressed: () => context.read<MyQrCodesBloc>().add(
                         const MyQrCodesRefreshed(),
                       ),
-                      child: const Text('Retry'),
+                      child: Text(context.l10n.retry),
                     ),
                   ],
                 ),
@@ -57,7 +58,7 @@ class _MyQrCodesScreenState extends State<MyQrCodesScreen> {
             return CustomScrollView(
               slivers: [
                 CustomSliverAppBar(
-                  title: 'My QR Codes',
+                  title: context.l10n.myQrCodesTitle,
                   showDivider: false,
                   showShadow: false,
                   actions: [
@@ -99,7 +100,7 @@ class _MyQrCodesScreenState extends State<MyQrCodesScreen> {
                         vertical: 16,
                       ),
                       child: CustomTextField(
-                        hintText: 'Search QR codes...',
+                        hintText: context.l10n.searchQrCodes,
                         initialValue: state.searchQuery ?? '',
                         showLinkIcon: false,
                         onChanged: (value) {
@@ -125,7 +126,7 @@ class _MyQrCodesScreenState extends State<MyQrCodesScreen> {
                   SliverFillRemaining(
                     child: Center(
                       child: Text(
-                        'No QR codes yet',
+                        context.l10n.noQrCodesYet,
                         style: AppFonts.titleMedium.copyWith(
                           color: AppColors.greyTextColor,
                         ),
@@ -193,9 +194,9 @@ class _MyQrCodesScreenState extends State<MyQrCodesScreen> {
   void _showDeleteDialog(BuildContext context, String id) {
     CustomDialog.show(
       context: context,
-      title: 'Delete QR Code',
-      message: 'Are you sure you want to delete this QR code?',
-      confirmText: 'Delete',
+      title: context.l10n.deleteQrCode,
+      message: context.l10n.areYouSureYouWantToDeleteThisQrCode,
+      confirmText: context.l10n.delete,
       cancelText: 'Cancel',
       isDestructive: true,
       onConfirm: () {

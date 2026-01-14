@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/core.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_elevated_button.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 class PaywallFooter extends StatelessWidget {
   const PaywallFooter({
@@ -28,14 +29,14 @@ class PaywallFooter extends StatelessWidget {
         const SizedBox(height: 32),
         CustomElevatedButton(
           onPressed: isLoading ? null : onContinue,
-          title: isLoading ? 'Processing...' : 'Continue',
+          title: isLoading ? context.l10n.processing : context.l10n.continueText,
         ),
         const SizedBox(height: 16),
         if (onRestore != null)
           TextButton(
             onPressed: isLoading ? null : onRestore,
             child: Text(
-              'Restore Purchases',
+              context.l10n.restorePurchases,
               style: AppFonts.titleSmall.copyWith(
                 fontWeight: FontWeight.w400,
                 color: AppColors.greyTextColor,
@@ -46,28 +47,28 @@ class PaywallFooter extends StatelessWidget {
           ),
         const SizedBox(height: 8),
         Text(
-          'Auto-renewable. Cancel anytime.',
+          context.l10n.autoRenewableCancelAnytime,
           style: AppFonts.titleSmall.copyWith(
             fontWeight: FontWeight.w400,
             color: AppColors.greyTextColor,
           ),
         ),
         const SizedBox(height: 8),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
+        Wrap(
+          alignment: WrapAlignment.center,
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 8,
+          runSpacing: 4,
           children: [
-            Text('Terms of Service', style: linkTextStyle),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                '•',
-                style: AppFonts.titleSmall.copyWith(
-                  fontWeight: FontWeight.w400,
-                  color: AppColors.greyTextColor,
-                ),
+            Text(context.l10n.termsOfService, style: linkTextStyle),
+            Text(
+              '•',
+              style: AppFonts.titleSmall.copyWith(
+                fontWeight: FontWeight.w400,
+                color: AppColors.greyTextColor,
               ),
             ),
-            Text('Privacy Policy', style: linkTextStyle),
+            Text(context.l10n.privacyPolicy, style: linkTextStyle),
           ],
         ),
         const SizedBox(height: 32),

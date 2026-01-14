@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 class PaywallHeader extends StatelessWidget {
   const PaywallHeader({super.key});
@@ -48,7 +49,7 @@ class PaywallHeader extends StatelessWidget {
           ),
         ),
         Text(
-          'Restore',
+          context.l10n.restore,
           style: AppFonts.titleLarge.copyWith(color: AppColors.greyTextColor),
         ),
       ],

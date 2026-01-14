@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/core.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 import 'package:qr_scanner/core/shared/widgets/base_container.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_elevated_button.dart';
 
@@ -22,7 +23,7 @@ class SubscriptionInfo extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                'Subscription',
+                context.l10n.subscription,
                 style: AppFonts.titleLarge.copyWith(
                   fontWeight: FontWeight.w700,
                 ),
@@ -36,7 +37,7 @@ class SubscriptionInfo extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
-                  hasSubscription ? 'Active' : 'Free', // ignore: dead_code
+                  hasSubscription ? context.l10n.active : context.l10n.free, // ignore: dead_code
                   style: AppFonts.titleSmall.copyWith(
                     color: hasSubscription
                         ? AppColors.greenColor // ignore: dead_code
@@ -50,7 +51,7 @@ class SubscriptionInfo extends StatelessWidget {
           const SizedBox(height: 16),
           if (!hasSubscription) ...[
             Text(
-              'Upgrade to Premium to unlock all features',
+              context.l10n.upgradeToPremiumToUnlock,
               style: AppFonts.titleMedium.copyWith(
                 color: AppColors.greyTextColor,
                 fontSize: 14,
@@ -61,13 +62,13 @@ class SubscriptionInfo extends StatelessWidget {
               onPressed: () {
                 context.push('/paywall');
               },
-              title: 'Upgrade to Premium',
+              title: context.l10n.upgradeToPremium,
             ),
           ] else ...[
             // ignore: dead_code
             // This code will be used when subscription is active
             Text(
-              'Your subscription is active',
+              context.l10n.yourSubscriptionIsActive,
               style: AppFonts.titleMedium.copyWith(
                 color: AppColors.greyTextColor,
                 fontSize: 14,
@@ -75,7 +76,7 @@ class SubscriptionInfo extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              'Expires: Never',
+              context.l10n.expiresNever,
               style: AppFonts.titleSmall.copyWith(
                 color: AppColors.greyColor,
                 fontSize: 12,

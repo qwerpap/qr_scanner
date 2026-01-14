@@ -1,3 +1,4 @@
+import 'package:qr_scanner/l10n/app_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../../core/bloc/bloc_providers.dart';
@@ -18,11 +19,14 @@ class HomeCubit extends Cubit<HomeState> {
        _getSavedQrCodesCountUseCase = getSavedQrCodesCountUseCase,
        super(const HomeState());
 
-  Future<void> initialize() async {
+  Future<void> initialize({AppLocalizations? localizations}) async {
     emit(state.copyWith(isLoading: true, errorMessage: null));
     try {
       _talker.info('Initializing home screen');
-      await Future.wait([_loadRecentActivities(), _loadSavedQrCodesCount()]);
+      await Future.wait([
+        _loadRecentActivities(localizations: localizations),
+        _loadSavedQrCodesCount(),
+      ]);
       emit(state.copyWith(isLoading: false));
       _talker.info('Home screen initialized successfully');
     } catch (e, stackTrace) {
@@ -31,14 +35,19 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  Future<void> refresh() async {
-    await initialize();
+  Future<void> refresh({AppLocalizations? localizations}) async {
+    await initialize(localizations: localizations);
   }
 
-  Future<void> _loadRecentActivities() async {
+  Future<void> _loadRecentActivities({AppLocalizations? localizations}) async {
     try {
       final qrCodes = await _getRecentActivitiesUseCase.execute(limit: 10);
-      final activities = qrCodes.map(QrCodeToRecentActivityMapper.map).toList();
+      final activities = qrCodes
+          .map((qrCode) => QrCodeToRecentActivityMapper.map(
+                qrCode,
+                localizations: localizations,
+              ))
+          .toList();
       emit(state.copyWith(recentActivities: activities));
       _talker.info('Loaded ${activities.length} recent activities');
     } catch (e, stackTrace) {

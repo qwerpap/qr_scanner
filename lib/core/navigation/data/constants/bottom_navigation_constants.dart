@@ -1,32 +1,35 @@
+import 'package:flutter/material.dart';
 import 'package:qr_scanner/core/constants/image_source.dart';
+import 'package:qr_scanner/core/l10n/app_localizations_helper.dart';
 
 import '../models/navigation_item.dart';
 import 'navigation_constants.dart';
-import 'navigation_labels.dart';
 
 class BottomNavigationConstants {
   BottomNavigationConstants._();
 
-  static const List<NavigationItem> navigationItems = [
-    NavigationItem(
-      iconPath: ImageSource.home,
-      label: NavigationLabels.home,
-      route: NavigationConstants.home,
-    ),
-    NavigationItem(
-      iconPath: ImageSource.scanQr,
-      label: NavigationLabels.scanQr,
-      route: NavigationConstants.scanQr,
-    ),
-    NavigationItem(
-      iconPath: ImageSource.myQrCodes,
-      label: NavigationLabels.myQrCodes,
-      route: NavigationConstants.myQrCodes,
-    ),
-    NavigationItem(
-      iconPath: ImageSource.history,
-      label: NavigationLabels.history,
-      route: NavigationConstants.history,
-    ),
-  ];
+  static List<NavigationItem> getNavigationItems(BuildContext context) {
+    return [
+      NavigationItem(
+        iconPath: ImageSource.home,
+        label: context.l10n.home,
+        route: NavigationConstants.home,
+      ),
+      NavigationItem(
+        iconPath: ImageSource.scanQr,
+        label: context.l10n.scan,
+        route: NavigationConstants.scanQr,
+      ),
+      NavigationItem(
+        iconPath: ImageSource.myQrCodes,
+        label: context.l10n.myQrCodesTitle,
+        route: NavigationConstants.myQrCodes,
+      ),
+      NavigationItem(
+        iconPath: ImageSource.history,
+        label: context.l10n.historyTitle,
+        route: NavigationConstants.history,
+      ),
+    ];
+  }
 }
