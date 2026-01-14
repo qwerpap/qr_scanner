@@ -31,8 +31,8 @@ class NotificationService {
           children: [
             Positioned(
               top: topPadding,
-              left: 0,
-              right: 0,
+              left: 24,
+              right: 24,
               child: CustomNotification(
                 message: type.message,
                 icon: type.icon,

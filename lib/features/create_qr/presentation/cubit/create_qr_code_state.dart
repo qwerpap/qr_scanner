@@ -10,6 +10,7 @@ class CreateQrCodeState extends Equatable {
   final String contactData;
   final Color selectedColor;
   final bool hasLogo;
+  final String? logoPath;
   final CreatedQrCodeModel? generatedQrCode;
   final bool isGenerating;
   final bool isSaved;
@@ -24,6 +25,7 @@ class CreateQrCodeState extends Equatable {
     this.contactData = '',
     this.selectedColor = const Color.fromRGBO(122, 203, 255, 1),
     this.hasLogo = false,
+    this.logoPath,
     this.generatedQrCode,
     this.isGenerating = false,
     this.isSaved = false,
@@ -39,6 +41,7 @@ class CreateQrCodeState extends Equatable {
     String? contactData,
     Color? selectedColor,
     bool? hasLogo,
+    String? logoPath,
     CreatedQrCodeModel? generatedQrCode,
     bool? isGenerating,
     bool? isSaved,
@@ -53,6 +56,7 @@ class CreateQrCodeState extends Equatable {
       contactData: contactData ?? this.contactData,
       selectedColor: selectedColor ?? this.selectedColor,
       hasLogo: hasLogo ?? this.hasLogo,
+      logoPath: logoPath ?? this.logoPath,
       generatedQrCode: generatedQrCode ?? this.generatedQrCode,
       isGenerating: isGenerating ?? this.isGenerating,
       isSaved: isSaved ?? this.isSaved,
@@ -85,6 +89,7 @@ class CreateQrCodeState extends Equatable {
         contactData,
         selectedColor,
         hasLogo,
+        logoPath,
         generatedQrCode,
         isGenerating,
         isSaved,

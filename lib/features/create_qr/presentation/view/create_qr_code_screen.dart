@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_elevated_button.dart';
+import 'package:qr_scanner/core/shared/widgets/custom_notification.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_sliver_app_bar.dart';
 import 'package:qr_scanner/features/create_qr/presentation/cubit/create_qr_code_cubit.dart';
 import 'package:qr_scanner/features/create_qr/presentation/cubit/create_qr_code_state.dart';
@@ -41,8 +42,10 @@ class CreateQrCodeScreen extends StatelessWidget {
               context.go('/qr_code_ready', extra: cubit);
             }
             if (state.errorMessage != null) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text(state.errorMessage!)),
+              CustomNotification.show(
+                context: context,
+                message: state.errorMessage!,
+                isError: true,
               );
             }
           },

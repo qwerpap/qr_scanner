@@ -5,6 +5,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:qr_scanner/core/core.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_elevated_button.dart';
+import 'package:qr_scanner/core/shared/widgets/custom_notification.dart';
 import 'package:qr_scanner/core/shared/widgets/custom_sliver_app_bar.dart';
 import 'package:qr_scanner/core/bloc/bloc_providers.dart';
 import 'package:qr_scanner/features/create_qr/presentation/cubit/create_qr_code_cubit.dart';
@@ -114,18 +115,18 @@ class QrCodeReadyScreen extends StatelessWidget {
                             context.read<CreateQrCodeCubit>().markAsSaved();
                             
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('QR code saved successfully'),
-                                ),
+                              CustomNotification.show(
+                                context: context,
+                                message: 'QR code saved successfully',
+                                isError: false,
                               );
                             }
                           } catch (e) {
                             if (context.mounted) {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(
-                                  content: Text('Error saving QR code: ${e.toString()}'),
-                                ),
+                              CustomNotification.show(
+                                context: context,
+                                message: 'Error saving QR code: ${e.toString()}',
+                                isError: true,
                               );
                             }
                           }

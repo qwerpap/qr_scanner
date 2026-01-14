@@ -25,6 +25,7 @@ class MyQrCodesLocalDataSource {
         'title': qrCode.title,
         'color': qrCode.color.value,
         'hasLogo': qrCode.hasLogo,
+        'logoPath': qrCode.logoPath,
         'categoryId': qrCode.categoryId,
       };
 
@@ -57,6 +58,7 @@ class MyQrCodesLocalDataSource {
             title: json['title'] as String,
             color: Color(json['color'] as int),
             hasLogo: json['hasLogo'] as bool? ?? false,
+            logoPath: json['logoPath'] as String?,
             categoryId: json['categoryId'] as String?,
           );
           qrCodes.add(qrCode);
@@ -111,6 +113,7 @@ class MyQrCodesLocalDataSource {
         'title': qrCode.title,
         'color': qrCode.color.value,
         'hasLogo': qrCode.hasLogo,
+        'logoPath': qrCode.logoPath,
         'categoryId': qrCode.categoryId,
       };
 

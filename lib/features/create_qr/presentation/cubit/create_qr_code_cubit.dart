@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 import '../../../../core/bloc/bloc_providers.dart';
 import '../../../my_qr_codes/domain/models/created_qr_code_model.dart';
@@ -17,6 +19,7 @@ class CreateQrCodeCubit extends Cubit<CreateQrCodeState> {
   final SaveCreatedQrCodeUseCase _saveCreatedQrCodeUseCase;
   final UpdateCreatedQrCodeUseCase _updateCreatedQrCodeUseCase;
   final Talker _talker = getIt<Talker>();
+  final ImagePicker _imagePicker = ImagePicker();
 
   CreateQrCodeCubit({
     required GenerateQrCodeUseCase generateQrCodeUseCase,
@@ -88,18 +91,32 @@ class CreateQrCodeCubit extends Cubit<CreateQrCodeState> {
       _talker.info('Generating QR code for type: ${state.selectedTypeId}');
       final qrCode = _generateQrCodeUseCase.execute(creationData);
       
+      // Create QR code with logoPath from state
+      final qrCodeWithLogo = CreatedQrCodeModel(
+        id: qrCode.id,
+        rawData: qrCode.rawData,
+        type: qrCode.type,
+        createdAt: qrCode.createdAt,
+        title: qrCode.title,
+        color: qrCode.color,
+        hasLogo: state.logoPath != null,
+        logoPath: state.logoPath,
+        categoryId: qrCode.categoryId,
+      );
+      
       // If editing, update existing QR code, otherwise save new one
       if (state.editingQrCodeId != null) {
         try {
           final updatedQrCode = CreatedQrCodeModel(
             id: state.editingQrCodeId!,
-            rawData: qrCode.rawData,
-            type: qrCode.type,
-            createdAt: qrCode.createdAt,
-            title: qrCode.title,
-            color: qrCode.color,
-            hasLogo: qrCode.hasLogo,
-            categoryId: qrCode.categoryId,
+            rawData: qrCodeWithLogo.rawData,
+            type: qrCodeWithLogo.type,
+            createdAt: qrCodeWithLogo.createdAt,
+            title: qrCodeWithLogo.title,
+            color: qrCodeWithLogo.color,
+            hasLogo: qrCodeWithLogo.hasLogo,
+            logoPath: qrCodeWithLogo.logoPath,
+            categoryId: qrCodeWithLogo.categoryId,
           );
           await _updateCreatedQrCodeUseCase.execute(updatedQrCode);
           _talker.info('QR code updated successfully');
@@ -110,24 +127,24 @@ class CreateQrCodeCubit extends Cubit<CreateQrCodeState> {
         } catch (updateError, updateStackTrace) {
           _talker.error('Error updating QR code', updateError, updateStackTrace);
           emit(state.copyWith(
-            generatedQrCode: qrCode,
+            generatedQrCode: qrCodeWithLogo,
             isSaved: false,
           ));
         }
       } else {
         // Automatically save the generated QR code
         try {
-          await _saveCreatedQrCodeUseCase(qrCode);
+          await _saveCreatedQrCodeUseCase(qrCodeWithLogo);
           _talker.info('QR code saved automatically');
           emit(state.copyWith(
-            generatedQrCode: qrCode,
+            generatedQrCode: qrCodeWithLogo,
             isSaved: true,
           ));
         } catch (saveError, saveStackTrace) {
           _talker.error('Error saving QR code automatically', saveError, saveStackTrace);
           // Still emit the generated QR code even if save failed
           emit(state.copyWith(
-            generatedQrCode: qrCode,
+            generatedQrCode: qrCodeWithLogo,
             isSaved: false,
           ));
         }
@@ -196,8 +213,77 @@ class CreateQrCodeCubit extends Cubit<CreateQrCodeState> {
       contactData: contactData,
       selectedColor: qrCode.color,
       hasLogo: qrCode.hasLogo,
+      logoPath: qrCode.logoPath,
       editingQrCodeId: qrCode.id,
     ));
-    _talker.info('Initialized for editing QR code: ${qrCode.id}');
+      _talker.info('Initialized for editing QR code: ${qrCode.id}');
+  }
+
+  Future<void> pickImageFromGallery() async {
+    try {
+      final status = await Permission.photos.request();
+      if (!status.isGranted) {
+        _talker.warning('Photo library permission denied');
+        emit(state.copyWith(errorMessage: 'Photo library permission denied'));
+        return;
+      }
+
+      _talker.info('Picking image from gallery');
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+      );
+
+      if (image == null) {
+        _talker.info('No image selected');
+        return;
+      }
+
+      _talker.info('Image selected: ${image.path}');
+      emit(state.copyWith(
+        logoPath: image.path,
+        hasLogo: true,
+      ));
+    } catch (e, stackTrace) {
+      _talker.error('Error picking image from gallery', e, stackTrace);
+      emit(state.copyWith(errorMessage: e.toString()));
+    }
+  }
+
+  Future<void> pickImageFromCamera() async {
+    try {
+      final status = await Permission.camera.request();
+      if (!status.isGranted) {
+        _talker.warning('Camera permission denied');
+        emit(state.copyWith(errorMessage: 'Camera permission denied'));
+        return;
+      }
+
+      _talker.info('Picking image from camera');
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.camera,
+      );
+
+      if (image == null) {
+        _talker.info('No image selected');
+        return;
+      }
+
+      _talker.info('Image selected: ${image.path}');
+      emit(state.copyWith(
+        logoPath: image.path,
+        hasLogo: true,
+      ));
+    } catch (e, stackTrace) {
+      _talker.error('Error picking image from camera', e, stackTrace);
+      emit(state.copyWith(errorMessage: e.toString()));
+    }
+  }
+
+  void removeLogo() {
+    emit(state.copyWith(
+      logoPath: null,
+      hasLogo: false,
+    ));
+    _talker.info('Logo removed');
   }
 }

@@ -17,27 +17,27 @@ class QrCodeViewScreen extends StatelessWidget {
     final extra = GoRouterState.of(context).extra;
     CreatedQrCodeModel? qrCode;
     MyQrCodesBloc? bloc;
-    
+
     if (extra is Map<String, dynamic>) {
       qrCode = extra['qrCode'] as CreatedQrCodeModel?;
       bloc = extra['bloc'] as MyQrCodesBloc?;
     }
-    
+
     // If bloc is provided, wrap with BlocProvider.value
     Widget screenContent = _buildScreenContent(context, qrCode, bloc);
-    
+
     if (bloc != null) {
-      return BlocProvider.value(
-        value: bloc,
-        child: screenContent,
-      );
+      return BlocProvider.value(value: bloc, child: screenContent);
     }
-    
+
     return screenContent;
   }
-  
-  Widget _buildScreenContent(BuildContext context, CreatedQrCodeModel? qrCode, MyQrCodesBloc? bloc) {
 
+  Widget _buildScreenContent(
+    BuildContext context,
+    CreatedQrCodeModel? qrCode,
+    MyQrCodesBloc? bloc,
+  ) {
     if (qrCode == null) {
       return Scaffold(
         body: Center(
@@ -65,10 +65,7 @@ class QrCodeViewScreen extends StatelessWidget {
             showDivider: false,
           ),
           SliverPadding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24,
-              vertical: 16,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             sliver: SliverList(
               delegate: SliverChildListDelegate([
                 const SizedBox(height: 20),
@@ -108,10 +105,7 @@ class QrCodeViewScreen extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.whiteColor,
                     borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: AppColors.borderColor,
-                      width: 1,
-                    ),
+                    border: Border.all(color: AppColors.borderColor, width: 1),
                     boxShadow: [
                       BoxShadow(
                         color: const Color.fromRGBO(0, 0, 0, 0.06),
@@ -161,10 +155,7 @@ class QrCodeViewScreen extends StatelessWidget {
                     }
                   },
                   onEdit: () {
-                    context.push(
-                      '/create_qr_code',
-                      extra: {'qrCode': qrCode},
-                    );
+                    context.push('/create_qr_code', extra: {'qrCode': qrCode});
                   },
                 ),
                 const SizedBox(height: 40),
@@ -175,14 +166,10 @@ class QrCodeViewScreen extends StatelessWidget {
       ),
     );
   }
-
 }
 
 class _ActionButtonsRow extends StatelessWidget {
-  const _ActionButtonsRow({
-    required this.onShare,
-    required this.onEdit,
-  });
+  const _ActionButtonsRow({required this.onShare, required this.onEdit});
 
   final VoidCallback onShare;
   final VoidCallback onEdit;

@@ -11,6 +11,7 @@ class CreatedQrCodeModel extends Equatable {
     required this.title,
     required this.color,
     this.hasLogo = false,
+    this.logoPath,
     this.categoryId,
   });
 
@@ -21,6 +22,7 @@ class CreatedQrCodeModel extends Equatable {
   final String title;
   final Color color;
   final bool hasLogo;
+  final String? logoPath;
   final String? categoryId;
 
   @override
@@ -32,6 +34,7 @@ class CreatedQrCodeModel extends Equatable {
         title,
         color,
         hasLogo,
+        logoPath,
         categoryId,
       ];
 }

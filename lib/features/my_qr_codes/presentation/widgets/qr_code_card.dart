@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
@@ -56,13 +57,33 @@ class QrCodeCard extends StatelessWidget {
                 ],
               ),
               child: Center(
-                child: QrImageView(
-                  data: qrCode.rawData,
-                  version: QrVersions.auto,
-                  size: 80,
-                  backgroundColor: Colors.transparent,
-                  foregroundColor: AppColors.whiteColor,
-                ),
+                child: qrCode.logoPath != null
+                    ? ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.file(
+                          File(qrCode.logoPath!),
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                          errorBuilder: (context, error, stackTrace) {
+                            // Fallback to QR code if image fails to load
+                            return QrImageView(
+                              data: qrCode.rawData,
+                              version: QrVersions.auto,
+                              size: 80,
+                              backgroundColor: Colors.transparent,
+                              foregroundColor: AppColors.whiteColor,
+                            );
+                          },
+                        ),
+                      )
+                    : QrImageView(
+                        data: qrCode.rawData,
+                        version: QrVersions.auto,
+                        size: 80,
+                        backgroundColor: Colors.transparent,
+                        foregroundColor: AppColors.whiteColor,
+                      ),
               ),
             ),
           ),
