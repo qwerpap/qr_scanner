@@ -22,6 +22,7 @@ import '../../../../features/home/presentation/view/home_screen.dart';
 import '../../../../features/scan_qr/presentation/view/scan_qr_screen.dart';
 import '../../../../features/my_qr_codes/presentation/view/my_qr_codes_screen.dart';
 import '../../../../features/history/presentation/view/history_screen.dart';
+import '../../../../features/profile/presentation/view/profile_screen.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
@@ -162,6 +163,13 @@ class AppRouter {
             path: NavigationConstants.history,
             pageBuilder: (context, state) => PageTransitions.slideTransition(
               child: const HistoryScreen(),
+              state: state,
+            ),
+          ),
+          GoRoute(
+            path: '/profile',
+            pageBuilder: (context, state) => PageTransitions.slideTransition(
+              child: const ProfileScreen(),
               state: state,
             ),
           ),
