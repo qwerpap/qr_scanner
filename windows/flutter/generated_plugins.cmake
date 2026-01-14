@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   clipboard
   file_selector_windows
+  firebase_core
   permission_handler_windows
   share_plus
   url_launcher_windows

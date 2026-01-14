@@ -44,6 +44,18 @@ import '../../features/create_qr/domain/usecases/generate_qr_code_usecase.dart';
 import '../../features/create_qr/domain/usecases/validate_qr_code_data_usecase.dart';
 import '../../features/create_qr/presentation/cubit/create_qr_code_cubit.dart';
 import '../services/app_side_effect_controller.dart';
+import '../subscription/apphud_service.dart';
+import '../services/attribution/att_service.dart';
+import '../services/attribution/appsflyer_service.dart';
+import '../services/attribution/firebase_attribution_service.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import '../../features/paywall/domain/repositories/paywall_repository.dart';
+import '../../features/paywall/data/repositories/paywall_repository_impl.dart';
+import '../../features/paywall/domain/usecases/get_paywall_products_usecase.dart';
+import '../../features/paywall/domain/usecases/purchase_subscription_usecase.dart';
+import '../../features/paywall/domain/usecases/restore_subscriptions_usecase.dart';
+import '../../features/paywall/domain/usecases/check_subscription_status_usecase.dart';
+import '../../features/paywall/presentation/bloc/paywall_bloc.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -53,6 +65,10 @@ class BlocProviders {
   static void setup() {
     _registerTalker();
     _registerAppSideEffectController();
+    _registerAttService();
+    _registerAppHudService();
+    _registerAppsFlyerService();
+    _registerFirebaseAttributionService();
     _registerNavigationCubit();
     _registerSplashCubit();
     _registerOnboardingCubit();
@@ -63,6 +79,7 @@ class BlocProviders {
     _registerHistoryBloc();
     _registerMyQrCodesBloc();
     _registerCreateQrCodeCubit();
+    _registerPaywallBloc();
   }
 
   static void _registerTalker() {
@@ -72,6 +89,50 @@ class BlocProviders {
   static void _registerAppSideEffectController() {
     getIt.registerLazySingleton<AppSideEffectController>(
       () => AppSideEffectController(),
+    );
+  }
+
+  static void _registerAttService() {
+    getIt.registerLazySingleton<AttService>(
+      () => AttServiceImpl(talker: getIt<Talker>()),
+    );
+  }
+
+  static void _registerAppHudService() {
+    getIt.registerLazySingleton<AppHudService>(
+      () => AppHudServiceImpl(talker: getIt<Talker>()),
+    );
+  }
+
+  static void _registerAppsFlyerService() {
+    getIt.registerLazySingleton<AppsFlyerService>(
+      () => AppsFlyerService(
+        talker: getIt<Talker>(),
+        attService: getIt<AttService>(),
+      ),
+    );
+    
+    // Устанавливаем AppHudService в AppsFlyerService после регистрации обоих
+    // Используем registerFactoryParam или устанавливаем после setup
+    final appsFlyerService = getIt<AppsFlyerService>();
+    appsFlyerService.setAppHudService(getIt<AppHudService>());
+  }
+
+  static void _registerFirebaseAttributionService() {
+    getIt.registerLazySingleton<FirebaseAnalytics>(
+      () => FirebaseAnalytics.instance,
+    );
+
+    getIt.registerLazySingleton<FirebaseAttributionService>(
+      () {
+        final service = FirebaseAttributionService(
+          analytics: getIt<FirebaseAnalytics>(),
+          talker: getIt<Talker>(),
+        );
+        // Устанавливаем AppHudService после регистрации
+        service.setAppHudService(getIt<AppHudService>());
+        return service;
+      },
     );
   }
 
@@ -268,6 +329,45 @@ class BlocProviders {
         validateQrCodeDataUseCase: getIt<ValidateQrCodeDataUseCase>(),
         saveCreatedQrCodeUseCase: getIt<SaveCreatedQrCodeUseCase>(),
         updateCreatedQrCodeUseCase: getIt<UpdateCreatedQrCodeUseCase>(),
+      ),
+    );
+  }
+
+  static void _registerPaywallBloc() {
+    // Repository
+    getIt.registerLazySingleton<PaywallRepository>(
+      () => PaywallRepositoryImpl(
+        appHudService: getIt<AppHudService>(),
+        talker: getIt<Talker>(),
+      ),
+    );
+
+    // Use cases
+    getIt.registerLazySingleton<GetPaywallProductsUseCase>(
+      () => GetPaywallProductsUseCase(getIt<PaywallRepository>()),
+    );
+
+    getIt.registerLazySingleton<PurchaseSubscriptionUseCase>(
+      () => PurchaseSubscriptionUseCase(getIt<PaywallRepository>()),
+    );
+
+    getIt.registerLazySingleton<RestoreSubscriptionsUseCase>(
+      () => RestoreSubscriptionsUseCase(getIt<PaywallRepository>()),
+    );
+
+    getIt.registerLazySingleton<CheckSubscriptionStatusUseCase>(
+      () => CheckSubscriptionStatusUseCase(getIt<PaywallRepository>()),
+    );
+
+    // Bloc
+    getIt.registerFactory<PaywallBloc>(
+      () => PaywallBloc(
+        getPaywallProductsUseCase: getIt<GetPaywallProductsUseCase>(),
+        purchaseSubscriptionUseCase: getIt<PurchaseSubscriptionUseCase>(),
+        restoreSubscriptionsUseCase: getIt<RestoreSubscriptionsUseCase>(),
+        checkSubscriptionStatusUseCase: getIt<CheckSubscriptionStatusUseCase>(),
+        appsFlyerService: getIt<AppsFlyerService>(),
+        talker: getIt<Talker>(),
       ),
     );
   }

@@ -7,6 +7,7 @@ import 'package:qr_scanner/features/create_qr/presentation/view/qr_code_ready_sc
 import 'package:qr_scanner/features/my_qr_codes/domain/models/created_qr_code_model.dart';
 import 'package:qr_scanner/features/my_qr_codes/presentation/view/qr_code_view_screen.dart';
 import 'package:qr_scanner/features/onboarding/presentation/view/onboarding_screen.dart';
+import 'package:qr_scanner/features/paywall/presentation/bloc/paywall_bloc.dart';
 import 'package:qr_scanner/features/paywall/presentation/view/paywall_screen.dart';
 import 'package:qr_scanner/features/scan_result/presentation/view/scan_result_screen.dart';
 import 'package:qr_scanner/features/scan_result/presentation/view/notification_handler.dart';
@@ -74,7 +75,10 @@ class AppRouter {
           GoRoute(
             path: '/paywall',
             pageBuilder: (context, state) => PageTransitions.fadeTransition(
+              child: BlocProvider(
+                create: (context) => getIt<PaywallBloc>(),
               child: const PaywallScreen(),
+              ),
               state: state,
             ),
           ),

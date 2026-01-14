@@ -26,6 +26,12 @@ dependencies:
   clipboard: ^3.0.14
   intl: ^0.20.2
   qr_flutter: ^4.1.0
+  apphud: ^3.0.1
+  appsflyer_sdk: ^6.17.8
+  app_tracking_transparency: ^2.0.6+1
+  device_info_plus: ^12.3.0
+  firebase_core: ^4.3.0
+  firebase_analytics: ^12.1.0
 
 dev_dependencies:
   flutter_test:
