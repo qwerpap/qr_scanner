@@ -14,9 +14,32 @@ import 'package:qr_scanner/features/create_qr/presentation/cubit/create_qr_code_
 import 'package:qr_scanner/features/create_qr/presentation/widgets/qr_ready_action_buttons.dart';
 import 'package:qr_scanner/features/create_qr/presentation/widgets/success_header.dart';
 import 'package:qr_scanner/features/my_qr_codes/domain/usecases/save_created_qr_code_usecase.dart';
+import 'package:qr_scanner/core/ads/presentation/cubit/ads_cubit.dart';
 
-class QrCodeReadyScreen extends StatelessWidget {
+class QrCodeReadyScreen extends StatefulWidget {
   const QrCodeReadyScreen({super.key});
+
+  @override
+  State<QrCodeReadyScreen> createState() => _QrCodeReadyScreenState();
+}
+
+class _QrCodeReadyScreenState extends State<QrCodeReadyScreen> {
+  bool _hasShownInterstitial = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Показываем interstitial рекламу после задержки
+    // Даем время для загрузки рекламы, если она еще не загружена
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 1), () {
+        if (mounted && !_hasShownInterstitial) {
+          _hasShownInterstitial = true;
+          context.read<AdsCubit>().showInterstitialAd();
+        }
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

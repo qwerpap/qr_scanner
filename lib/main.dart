@@ -11,6 +11,7 @@ import 'package:qr_scanner/core/services/attribution/appsflyer_service.dart';
 import 'package:qr_scanner/core/services/attribution/firebase_attribution_service.dart';
 import 'package:qr_scanner/core/services/attribution/att_service.dart';
 import 'package:qr_scanner/core/services/attribution/att_status.dart';
+import 'package:qr_scanner/core/ads/presentation/cubit/ads_cubit.dart';
 import 'package:qr_scanner/features/onboarding/presentation/bloc/onboarding_bloc.dart';
 import 'package:qr_scanner/firebase_options.dart';
 import 'package:qr_scanner/core/services/user_preferences_service.dart';
@@ -150,6 +151,21 @@ void _initializeSDKsInBackground() {
     } catch (e) {
       if (kDebugMode) {
         debugPrint('Failed to send AppsFlyer attribution to AppHud: $e');
+      }
+    }
+
+    // 6. Инициализируем AdMob
+    try {
+      final adsCubit = getIt<AdsCubit>();
+      await adsCubit.init();
+      // Предзагружаем межстраничную рекламу
+      await adsCubit.loadInterstitialAd();
+      if (kDebugMode) {
+        debugPrint('AdMob initialized');
+      }
+    } catch (e) {
+      if (kDebugMode) {
+        debugPrint('AdMob error: $e');
       }
     }
   });

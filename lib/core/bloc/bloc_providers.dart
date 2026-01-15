@@ -56,6 +56,19 @@ import '../../features/paywall/domain/usecases/purchase_subscription_usecase.dar
 import '../../features/paywall/domain/usecases/restore_subscriptions_usecase.dart';
 import '../../features/paywall/domain/usecases/check_subscription_status_usecase.dart';
 import '../../features/paywall/presentation/bloc/paywall_bloc.dart';
+import '../ads/data/datasources/admob_datasource.dart';
+import '../ads/data/repositories/ads_repository_impl.dart';
+import '../ads/domain/repositories/ads_repository.dart';
+import '../ads/domain/usecases/init_ads_usecase.dart';
+import '../ads/domain/usecases/can_show_ads_usecase.dart';
+import '../ads/domain/usecases/load_banner_ad_usecase.dart';
+import '../ads/domain/usecases/load_interstitial_ad_usecase.dart';
+import '../ads/domain/usecases/show_interstitial_ad_usecase.dart';
+import '../ads/domain/usecases/load_rewarded_ad_usecase.dart';
+import '../ads/domain/usecases/show_rewarded_ad_usecase.dart';
+import '../ads/domain/usecases/load_app_open_ad_usecase.dart';
+import '../ads/domain/usecases/show_app_open_ad_usecase.dart';
+import '../ads/presentation/cubit/ads_cubit.dart';
 
 final GetIt getIt = GetIt.instance;
 
@@ -80,6 +93,7 @@ class BlocProviders {
     _registerMyQrCodesBloc();
     _registerCreateQrCodeCubit();
     _registerPaywallBloc();
+    _registerAdsModule();
   }
 
   static void _registerTalker() {
@@ -372,6 +386,75 @@ class BlocProviders {
     );
   }
 
+  static void _registerAdsModule() {
+    // Data source
+    getIt.registerLazySingleton<AdMobDataSource>(
+      () => AdMobDataSource(talker: getIt<Talker>()),
+    );
+
+    // Repository
+    getIt.registerLazySingleton<AdsRepository>(
+      () => AdsRepositoryImpl(
+        dataSource: getIt<AdMobDataSource>(),
+        appHudService: getIt<AppHudService>(),
+        talker: getIt<Talker>(),
+      ),
+    );
+
+    // Use cases
+    getIt.registerLazySingleton<InitAdsUseCase>(
+      () => InitAdsUseCase(getIt<AdsRepository>()),
+    );
+
+    getIt.registerLazySingleton<CanShowAdsUseCase>(
+      () => CanShowAdsUseCase(getIt<AdsRepository>()),
+    );
+
+    getIt.registerLazySingleton<LoadBannerAdUseCase>(
+      () => LoadBannerAdUseCase(getIt<AdsRepository>()),
+    );
+
+    getIt.registerLazySingleton<LoadInterstitialAdUseCase>(
+      () => LoadInterstitialAdUseCase(getIt<AdsRepository>()),
+    );
+
+    getIt.registerLazySingleton<ShowInterstitialAdUseCase>(
+      () => ShowInterstitialAdUseCase(getIt<AdsRepository>()),
+    );
+
+    getIt.registerLazySingleton<LoadRewardedAdUseCase>(
+      () => LoadRewardedAdUseCase(getIt<AdsRepository>()),
+    );
+
+    getIt.registerLazySingleton<ShowRewardedAdUseCase>(
+      () => ShowRewardedAdUseCase(getIt<AdsRepository>()),
+    );
+
+    getIt.registerLazySingleton<LoadAppOpenAdUseCase>(
+      () => LoadAppOpenAdUseCase(getIt<AdsRepository>()),
+    );
+
+    getIt.registerLazySingleton<ShowAppOpenAdUseCase>(
+      () => ShowAppOpenAdUseCase(getIt<AdsRepository>()),
+    );
+
+    // Cubit
+    getIt.registerLazySingleton<AdsCubit>(
+      () => AdsCubit(
+        initAdsUseCase: getIt<InitAdsUseCase>(),
+        canShowAdsUseCase: getIt<CanShowAdsUseCase>(),
+        loadInterstitialAdUseCase: getIt<LoadInterstitialAdUseCase>(),
+        showInterstitialAdUseCase: getIt<ShowInterstitialAdUseCase>(),
+        loadRewardedAdUseCase: getIt<LoadRewardedAdUseCase>(),
+        showRewardedAdUseCase: getIt<ShowRewardedAdUseCase>(),
+        loadAppOpenAdUseCase: getIt<LoadAppOpenAdUseCase>(),
+        showAppOpenAdUseCase: getIt<ShowAppOpenAdUseCase>(),
+        adsRepository: getIt<AdsRepository>(),
+        talker: getIt<Talker>(),
+      ),
+    );
+  }
+
   static Widget wrapWithProviders({
     required BuildContext context,
     required Widget child,
@@ -385,6 +468,9 @@ class BlocProviders {
         BlocProvider<NavigationCubit>(
           create: (_) =>
               getIt<NavigationCubit>(param1: currentLocation, param2: isDark),
+        ),
+        BlocProvider<AdsCubit>(
+          create: (_) => getIt<AdsCubit>(),
         ),
       ],
       child: child,

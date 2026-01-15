@@ -17,6 +17,7 @@ import 'package:qr_scanner/features/scan_result/presentation/widgets/open_link_b
 import 'package:qr_scanner/features/scan_result/presentation/widgets/qr_code_info_card.dart';
 import 'package:qr_scanner/features/scan_result/presentation/widgets/qr_code_metadata.dart';
 import 'package:qr_scanner/features/scan_result/presentation/widgets/scan_success_header.dart';
+import 'package:qr_scanner/core/ads/presentation/cubit/ads_cubit.dart';
 
 class ScanResultScreen extends StatefulWidget {
   final String qrData;
@@ -28,6 +29,22 @@ class ScanResultScreen extends StatefulWidget {
 }
 
 class _ScanResultScreenState extends State<ScanResultScreen> {
+  bool _hasShownInterstitial = false;
+
+  @override
+  void initState() {
+    super.initState();
+    // Показываем interstitial рекламу после небольшой задержки
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted && !_hasShownInterstitial) {
+          _hasShownInterstitial = true;
+          context.read<AdsCubit>().showInterstitialAd();
+        }
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(

@@ -8,6 +8,17 @@ import 'package:qr_scanner/core/theme/app_fonts.dart';
 import 'package:qr_scanner/features/history/domain/models/history_item_model.dart';
 
 class HistoryCard extends StatelessWidget {
+  // Map с константными IconData для всех возможных иконок
+  // Используем константные IconData для tree-shaking
+  static const Map<int, IconData> _iconDataMap = {
+    0xe157: Icons.link, // url
+    0xe63e: Icons.wifi, // wifi
+    0xe8d4: Icons.contact_page, // vcard
+    0xe0be: Icons.email, // email
+    0xe0b0: Icons.phone, // phone
+    0xe0d8: Icons.sms, // sms
+    0xe8b8: Icons.qr_code_scanner, // text, unknown
+  };
   const HistoryCard({
     super.key,
     required this.item,
@@ -29,10 +40,7 @@ class HistoryCard extends StatelessWidget {
           child: Row(
             children: [
               ContainerWithIcon(
-                iconData: IconData(
-                  item.iconData,
-                  fontFamily: 'MaterialIcons',
-                ),
+                iconData: _iconDataMap[item.iconData] ?? Icons.qr_code_scanner,
                 color: Color(item.iconColor),
               ),
               const SizedBox(width: 8),

@@ -10,6 +10,8 @@ import 'package:qr_scanner/features/home/presentation/cubit/home_state.dart';
 import 'package:qr_scanner/features/home/presentation/widgets/action_card.dart';
 import 'package:qr_scanner/features/home/presentation/widgets/recent_card.dart';
 import 'package:qr_scanner/features/home/presentation/widgets/welcome_text.dart';
+import 'package:qr_scanner/core/ads/presentation/widgets/ad_banner_widget.dart';
+import 'package:qr_scanner/core/ads/presentation/cubit/ads_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -105,97 +107,107 @@ class _HomeScreenContentState extends State<_HomeScreenContent> {
                 );
               }
 
-              return CustomScrollView(
-                slivers: [
-                  SliverPadding(
-                    padding: const EdgeInsets.all(24),
-                    sliver: SliverList(
-                      delegate: SliverChildListDelegate([const WelcomeText()]),
-                    ),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverGrid(
-                      gridDelegate:
-                          const SliverGridDelegateWithFixedCrossAxisCount(
-                            crossAxisCount: 2,
-                            childAspectRatio: 0.88,
-                            mainAxisSpacing: 16,
-                            crossAxisSpacing: 16,
+              return Column(
+                children: [
+                  Expanded(
+                    child: CustomScrollView(
+                      slivers: [
+                        SliverPadding(
+                          padding: const EdgeInsets.all(24),
+                          sliver: SliverList(
+                            delegate: SliverChildListDelegate([const WelcomeText()]),
                           ),
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                        final cards = ActionCardsData.getCards(context);
-                        final card = cards[index];
-                        return ActionCard(
-                          model: card,
-                          onTap: () {
-                            final route = widget.onRouteForActionCard(card.title, context);
-                            context.push(route);
-                          },
-                        );
-                      }, childCount: ActionCardsData.getCards(context).length),
-                    ),
-                  ),
-                  if (state.recentActivities.isNotEmpty)
-                    SliverPadding(
-                      padding: const EdgeInsets.only(
-                        left: 24,
-                        right: 24,
-                        top: 32,
-                        bottom: 48,
-                      ),
-                      sliver: SliverList(
-                        delegate: SliverChildBuilderDelegate((context, index) {
-                          if (index == 0) {
-                            return Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  context.l10n.recentActivity,
-                                  style: AppFonts.displayMedium.copyWith(
-                                    fontSize: 22,
-                                  ),
+                        ),
+                        SliverPadding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          sliver: SliverGrid(
+                            gridDelegate:
+                                const SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  childAspectRatio: 0.88,
+                                  mainAxisSpacing: 16,
+                                  crossAxisSpacing: 16,
                                 ),
-                                const SizedBox(height: 16),
-                                RecentCard(
-                                  model: state.recentActivities[0],
-                                  onPressed: () {
-                                    if (state.recentActivities[0].qrData !=
-                                        null) {
-                                      context.push(
-                                        '/scan_result',
-                                        extra: {
-                                          'qrData':
-                                              state.recentActivities[0].qrData,
+                            delegate: SliverChildBuilderDelegate((context, index) {
+                              final cards = ActionCardsData.getCards(context);
+                              final card = cards[index];
+                              return ActionCard(
+                                model: card,
+                                onTap: () {
+                                  final route = widget.onRouteForActionCard(card.title, context);
+                                  context.push(route);
+                                },
+                              );
+                            }, childCount: ActionCardsData.getCards(context).length),
+                          ),
+                        ),
+                        if (state.recentActivities.isNotEmpty)
+                          SliverPadding(
+                            padding: const EdgeInsets.only(
+                              left: 24,
+                              right: 24,
+                              top: 32,
+                              bottom: 48,
+                            ),
+                            sliver: SliverList(
+                              delegate: SliverChildBuilderDelegate((context, index) {
+                                if (index == 0) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        context.l10n.recentActivity,
+                                        style: AppFonts.displayMedium.copyWith(
+                                          fontSize: 22,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 16),
+                                      RecentCard(
+                                        model: state.recentActivities[0],
+                                        onPressed: () {
+                                          if (state.recentActivities[0].qrData !=
+                                              null) {
+                                            context.push(
+                                              '/scan_result',
+                                              extra: {
+                                                'qrData':
+                                                    state.recentActivities[0].qrData,
+                                              },
+                                            );
+                                          }
                                         },
-                                      );
-                                    }
-                                  },
-                                ),
-                              ],
-                            );
-                          }
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 12),
-                            child: RecentCard(
-                              model: state.recentActivities[index],
-                              onPressed: () {
-                                if (state.recentActivities[index].qrData !=
-                                    null) {
-                                  context.push(
-                                    '/scan_result',
-                                    extra: {
-                                      'qrData':
-                                          state.recentActivities[index].qrData,
-                                    },
+                                      ),
+                                    ],
                                   );
                                 }
-                              },
+                                return Padding(
+                                  padding: const EdgeInsets.only(top: 12),
+                                  child: RecentCard(
+                                    model: state.recentActivities[index],
+                                    onPressed: () {
+                                      if (state.recentActivities[index].qrData !=
+                                          null) {
+                                        context.push(
+                                          '/scan_result',
+                                          extra: {
+                                            'qrData':
+                                                state.recentActivities[index].qrData,
+                                          },
+                                        );
+                                      }
+                                    },
+                                  ),
+                                );
+                              }, childCount: state.recentActivities.length),
                             ),
-                          );
-                        }, childCount: state.recentActivities.length),
-                      ),
+                          ),
+                      ],
                     ),
+                  ),
+                  // Баннер рекламы
+                  AdBannerWidget(
+                    canShowAds: () => context.read<AdsCubit>().canShowAds(),
+                  ),
                 ],
               );
   }
